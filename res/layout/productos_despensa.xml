@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent">
+  
+    <TextView android:id="@+id/TxtMensaje" 
+    	android:text="$mensaje" 
+    	android:layout_width="fill_parent" 
+    	android:layout_height="wrap_content" />
+    <LinearLayout android:orientation="horizontal" android:layout_height="wrap_content" android:id="@+id/linearLLayout1" android:layout_width="fill_parent">
+        <Button android:id="@+id/BtnScan" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Scan"></Button>
+        <Button android:id="@+id/BtnProductos" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Productos"></Button>
+        <Button android:id="@+id/BtnDespensa" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Despensa"></Button>
+        <Button android:id="@+id/BtnLista" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Lista"></Button>
+    </LinearLayout>
+    <ListView android:id="@+id/LstProductosDespensa" android:layout_height="wrap_content" android:layout_width="fill_parent"></ListView>
+    	  
+</LinearLayout>

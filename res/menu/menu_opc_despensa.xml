@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <group android:id="@+id/OpcGrpProducto">
+        <item android:id="@+id/OpcSuma1" android:title="Sumar 1"></item>
+    	<item android:id="@+id/OpcResta1" android:title="Restar 1"></item>
+   		<item android:id="@+id/OpcEditar" android:title="Editar"></item>
+    	<item android:id="@+id/OpcEliminar" android:title="Eliminar"></item>
+    </group>
+    <group android:id="@+id/OpcGrpAñadirAP">
+    	<item android:id="@+id/OpcAñadirAP" android:title="Añadir a Productos"></item>
+    </group>
+    <group android:id="@+id/OpcGrpAñadirAD">
+    	<item android:id="@+id/OpcAñadirAD" android:title="Añadir a Despensa"></item>
+    </group>
+    <group android:id="@+id/OpcGrpPrincipal">
+        <item android:id="@+id/OpcScan" android:title="Scan Code"></item>
+        <item android:id="@+id/OpcListaCompra" android:title="Generar Lista"></item>
+        <item android:id="@+id/OpcNuevoProducto" android:title="Producto Nuevo"></item>
+    </group>
+</menu>

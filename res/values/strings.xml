@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--  <string name="hello">Hello World, HolaUsuario!</string>-->
+    <string name="app_name">Despensa</string>
+    <string name="hola">Añadir</string>
+    <string name="nombre">Escribe tu nombre:</string>
+    <string name="eliminar">Eliminar</string>
+    <string name="aceptar">Aceptar</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="añadir">Añadir</string>
+    <string name="hint_añadir">Nombre despensa</string>
+    <string name="tittle_añadir">Nueva despensa</string>
+    <string name="accion">Accion</string>
+</resources>
