@@ -147,7 +147,11 @@ public class EditProducto extends Activity {
 		// TODO Auto-generated method stub
 		Log.d(Constantes.LOG_TAG, "guardarProducto()");
 		
-		long idProducto = conexion.insertarProducto(txtNombre.getText(), txtBarCode.getText(), cmbCategorias.getSelectedItemPosition(), txtNotas.getText());
+		String nombreProducto = txtNombre.getText().toString();
+		String codebar = txtBarCode.getText().toString();
+		String notas = txtNotas.getText().toString();
+		
+		long idProducto = conexion.insertarProducto(nombreProducto, codebar, cmbCategorias.getSelectedItemPosition(), notas);
 		
 		if (idProducto>0){
 			if (chbAñadirEnDespensa.isChecked()){

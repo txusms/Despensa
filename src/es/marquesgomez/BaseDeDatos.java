@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.text.Editable;
 import android.util.Log;
 //import android.widget.Toast;
 
@@ -49,8 +48,8 @@ public class BaseDeDatos extends SQLiteOpenHelper{
 		static final String tabla = "ListaCompra";
 		static final String idDespensa = "idDespensa";
 		static final String idProducto= "idProducto";
-		static final String cantidadAComprar = "stock";
-		static final String cantidadComprada = "stockMin";
+		static final String cantidadAComprar = "cantidadAComprar";
+		static final String cantidadComprada = "cantidadComprada";
 		static final String notas = "notas";
 	}
 	
@@ -107,7 +106,7 @@ public class BaseDeDatos extends SQLiteOpenHelper{
 		db.execSQL(sqlCreate_Categorias);
 		db.execSQL(sqlCreate_Productos);
 		db.execSQL(sqlCreate_Contenido);
-		//db.execSQL(sqlCreate_ListaCompra);
+		db.execSQL(sqlCreate_ListaCompra);
 	}
 	
 	@Override
@@ -462,13 +461,13 @@ public class BaseDeDatos extends SQLiteOpenHelper{
 	
 	/**
 	 * 
-	 * @param editable
-	 * @param editable2
+	 * @param nombre
+	 * @param codigoBarras
 	 * @param categoria
-	 * @param editable3
+	 * @param notas
 	 * @return long
 	 */
-	public long insertarProducto(Editable editable, Editable editable2, int categoria, Editable editable3){
+	public long insertarProducto(String nombre, String codigoBarras, int categoria, String notas){
 		Log.d(Constantes.LOG_TAG, "insertarProducto() - ");
 		long result = 0;
 		
@@ -477,13 +476,13 @@ public class BaseDeDatos extends SQLiteOpenHelper{
 
 			ContentValues nuevoRegistro = new ContentValues();
 			
-			nuevoRegistro.put(TablaProductos.nombre, editable.toString());
-			
-			nuevoRegistro.put(TablaProductos.codBarras,editable2.toString());
+			nuevoRegistro.put(TablaProductos.nombre, nombre.toString());
+			if (codigoBarras.trim().length() != 0)
+				nuevoRegistro.put(TablaProductos.codBarras,codigoBarras.toString());
 			
 			nuevoRegistro.put(TablaProductos.idCategoria,categoria);
 			
-			nuevoRegistro.put(TablaProductos.notas,editable3.toString());
+			nuevoRegistro.put(TablaProductos.notas,notas.toString());
 			
 			//Insertamos el registro en la base de datos
 			result = db.insert(TablaProductos.tabla, null, nuevoRegistro);
@@ -691,6 +690,74 @@ public class BaseDeDatos extends SQLiteOpenHelper{
 		Log.d(Constantes.LOG_TAG, "getProductos() - Return: "+productos.toString());
 		return productos;
 		
-	} //Fin getDespensas
+	} //Fin getProductos
+	
+	public ProductoCompra[] getProductosCompra(int idDespensa){
+		Log.d(Constantes.LOG_TAG, "getProductosCompra()");
+//		ArrayList<ProductoDespensa> listaProductos= new ArrayList<ProductoDespensa>();
+		ProductoCompra[] listaProductos;
+		ProductoCompra productovacio = new ProductoCompra();
+		
+		SQLiteDatabase db = this.getReadableDatabase();
+		if (db != null){
+			Log.d(Constantes.LOG_TAG, "getProductosCompra() - Antes del SELECT");
+			
+			Cursor c = db.rawQuery(" SELECT "+TablaProductos.id+", "+TablaProductos.nombre+", "+TablaListaCompra.cantidadAComprar+", "+TablaListaCompra.cantidadComprada+", " +TablaProductos.codBarras+
+									" FROM "+TablaListaCompra.tabla+" JOIN "+TablaProductos.tabla+"" +
+									" ON "+TablaListaCompra.idProducto+"="+TablaProductos.id+" WHERE "+TablaListaCompra.idDespensa+"= "+idDespensa,null);
+//			
+			Log.d(Constantes.LOG_TAG, "getProductosCompra() - Despues del SELECT");
+			
+			//Nos aseguramos de que existe al menos un registro
+			if (c.moveToFirst()) {
+				Log.d(Constantes.LOG_TAG, "getProductosCompra() - Dentro movefirst");
+				//Recorremos el cursor hasta que no haya más registros
+				listaProductos = new ProductoCompra[c.getCount()];
+				int i=0;
+				
+				do {
+					Log.d(Constantes.LOG_TAG, "getProductosCompra() - Dentro do-while "+i);
+					
+					listaProductos[i]= new ProductoCompra(Var.despensaSelec.getId(), c.getLong(0), c.getString(1), c.getInt(2), c.getInt(3), c.getString(4));
+//					despensas[i]= c.getString(1);				
+					i++;
+
+				} while(c.moveToNext());
+				
+			} else {
+				
+				listaProductos = new ProductoCompra[] {productovacio};
+			}
+
+			if (c != null && !c.isClosed()) {
+				Log.d(Constantes.LOG_TAG,"getProductosCompra() - Cerrar cursor");
+				c.close();
+			}
+
+			
+			
+		} else {
+			//despensas = new String[] {""};
+//			listaProductos[0] = new ProductoDespensa() ;
+			listaProductos = new ProductoCompra[] {productovacio};
+		}
+		
+		
+		//Cerramos la base de datos
+		db.close();
+//		Log.d(Constantes.LOG_TAG, "getIdDespensa() - Return: "+despensas.toString());
+		
+		Log.d(Constantes.LOG_TAG,"getProductosCompra() - return");
+		return listaProductos;
+	}
+	
+	public boolean generarListaCompra(int idDespensa){
+		Log.d(Constantes.LOG_TAG,"generarListaCompra()");
+		boolean result = false;
+		
+		
+		
+		return result;
+	}
 
 }

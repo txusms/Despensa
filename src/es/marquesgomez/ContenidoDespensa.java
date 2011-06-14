@@ -248,7 +248,7 @@ public class ContenidoDespensa extends Activity {
 			scanCode();
 			return true;
 		case R.id.OpcListaCompra:
-
+			conexion.generarListaCompra(Var.despensaSelec.getId());
 			return true;
 		case R.id.OpcNuevoProducto:
 			añadirProducto("");
