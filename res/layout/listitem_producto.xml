@@ -11,6 +11,7 @@
                 <TextView android:id="@+id/LblItemProductoCodigoBarras" android:layout_height="wrap_content" android:text="(Codigo de barras)" android:layout_width="wrap_content"></TextView>
                 <RelativeLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:id="@+id/relativeLayout2">
                     <LinearLayout android:layout_alignParentRight="true" android:id="@+id/linearLayout2" android:layout_width="wrap_content" android:layout_height="wrap_content">
+                    	<ImageView android:layout_width="50dp" android:layout_height="fill_parent" android:id="@+id/ImgItemProductoAñadirADespensa" android:src="@drawable/add_green_button"></ImageView>
                         <ImageView android:layout_width="50dp" android:layout_height="fill_parent" android:id="@+id/ImgItemProductoEliminar" android:src="@drawable/trash_full"></ImageView>
                     </LinearLayout>
                 </RelativeLayout>

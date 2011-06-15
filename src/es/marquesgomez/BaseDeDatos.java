@@ -3,6 +3,7 @@ package es.marquesgomez;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -26,7 +27,8 @@ public class BaseDeDatos extends SQLiteOpenHelper{
 		static final String nombre = "nombre";
 		static final String codBarras = "codbarras";
 		static final String notas = "notas";
-		static final String idCategoria = "idCategoria";		
+		static final String idCategoria = "idCategoria";
+		static final String aGranell = "aGranell";
 	}
 	
 	private class TablaContenido{
@@ -63,16 +65,18 @@ public class BaseDeDatos extends SQLiteOpenHelper{
 												TablaProductos.codBarras+" TEXT CONSTRAINT UN_Productos_codb UNIQUE, " +
 												TablaProductos.idCategoria+" INTEGER, " +
 												TablaProductos.notas+" TEXT, " +
+												TablaProductos.aGranell+" INTEGER DEFAULT 0, " +
 												"CONSTRAINT UN_Productos_nom UNIQUE ("+TablaProductos.nombre+"), " +
-												"FOREIGN KEY (idCategoria) REFERENCES "+TablaCategorias.tabla+");";
+												"FOREIGN KEY ("+TablaProductos.idCategoria+") REFERENCES "+TablaCategorias.tabla+" ON DELETE SET NULL);";
 	String sqlCreate_Contenido = " CREATE TABLE IF NOT EXISTS "+TablaContenido.tabla+" (" +
 												TablaContenido.idDespensa+" INTEGER NOT NULL, " +
 												TablaContenido.idProducto+" INTEGER NOT NULL, " +
 												TablaContenido.stock+" INTEGER DEFAULT 0, " +
 												TablaContenido.stockMin+" INTEGER DEFAULT 0, " +
 												TablaContenido.notas+" TEXT, " +
-												"FOREIGN KEY ("+TablaContenido.idDespensa+") REFERENCES "+TablaDespensas.tabla+", " +
-												"FOREIGN KEY ("+TablaContenido.idProducto+") REFERENCES "+TablaProductos.tabla+");";
+												"PRIMARY KEY ("+TablaContenido.idDespensa+", "+TablaContenido.idProducto +") "+
+												"FOREIGN KEY ("+TablaContenido.idDespensa+") REFERENCES "+TablaDespensas.tabla+" ON DELETE CASCADE, " +
+												"FOREIGN KEY ("+TablaContenido.idProducto+") REFERENCES "+TablaProductos.tabla+" ON DELETE CASCADE);";
 	String sqlCreate_Categorias = " CREATE TABLE IF NOT EXISTS "+TablaCategorias.tabla+" (" +
 												TablaCategorias.id+" INTEGER CONSTRAINT PK_Categorias PRIMARY KEY AUTOINCREMENT, " +
 												TablaCategorias.nombre+" TEXT CONSTRAINT UN_Categorias_nom UNIQUE);";
@@ -82,10 +86,15 @@ public class BaseDeDatos extends SQLiteOpenHelper{
 												TablaListaCompra.cantidadAComprar+" INTEGER, " +
 												TablaListaCompra.cantidadComprada+" INTEGER, " +
 												TablaListaCompra.notas+" TEXT, " +
-												"FOREIGN KEY ("+TablaListaCompra.idDespensa+") REFERENCES "+TablaDespensas.tabla+", " +
-												"FOREIGN KEY ("+TablaListaCompra.idProducto+") REFERENCES "+TablaProductos.tabla+");";
+												"PRIMARY KEY ("+TablaListaCompra.idDespensa+", "+TablaListaCompra.idProducto +") "+
+												"FOREIGN KEY ("+TablaListaCompra.idDespensa+") REFERENCES "+TablaDespensas.tabla+" ON DELETE CASCADE, " +
+												"FOREIGN KEY ("+TablaListaCompra.idProducto+") REFERENCES "+TablaProductos.tabla+" ON DELETE CASCADE);";
+	
+	//Clausula para poder utilizar las FOREIGN KEYs
+	String sqlCreate_Foreign_keys = "PRAGMA foreign_keys=ON;";
 	
 	String sqlCreate = sqlCreate_Despensas+sqlCreate_Categorias;
+	
 	/**
 	 * Constructor
 	 * 
@@ -107,6 +116,7 @@ public class BaseDeDatos extends SQLiteOpenHelper{
 		db.execSQL(sqlCreate_Productos);
 		db.execSQL(sqlCreate_Contenido);
 		db.execSQL(sqlCreate_ListaCompra);
+		db.execSQL(sqlCreate_Foreign_keys);
 	}
 	
 	@Override
@@ -509,9 +519,11 @@ public class BaseDeDatos extends SQLiteOpenHelper{
 			nuevoRegistro.put(TablaContenido.stockMin,stockMin);
 			
 			//Insertamos el registro en la base de datos
-			db.insert(TablaContenido.tabla, null, nuevoRegistro);
+			long code = db.insert(TablaContenido.tabla, null, nuevoRegistro);
 			
-			result =true;  				
+			if (code > 0)
+				result =true;
+			Log.i(Constantes.LOG_TAG,"insertarProductoADespensa() - resultado db.insert(): "+code);
 		}
 	
 		db.close();
@@ -754,8 +766,127 @@ public class BaseDeDatos extends SQLiteOpenHelper{
 	public boolean generarListaCompra(int idDespensa){
 		Log.d(Constantes.LOG_TAG,"generarListaCompra()");
 		boolean result = false;
+		SQLiteDatabase db = this.getWritableDatabase();
+		//Si hemos abierto correctamente la base de datos
+		if(db != null){
+			
+			String sql1 = "INSERT INTO ListaCompra (idDespensa,idProducto,cantidadAComprar) " +
+						"SELECT idDespensa,idProducto,stock "+
+						"FROM Contenido " +
+						"WHERE idDespensa="+idDespensa+" AND stock<=stockMin AND " +
+						"idProducto NOT IN (SELECT c.idProducto " +
+											"FROM Contenido as c JOIN ListaCompra as lc " +
+											"ON c.idDespensa=lc.idDespensa AND c.idProducto=lc.idProducto " +
+											"WHERE c.idDespensa="+idDespensa+");";
+			try{
+				db.execSQL(sql1);
+				result = true;
+			} catch (SQLException e){
+				Log.e(Constantes.LOG_TAG,"generarListaCompra() - SQLException");
+			}
+			
+			
+			
+		}
+		
+		return result;
+	}
+
+	public boolean updateProducto(Producto producto) {
+		// TODO Auto-generated method stub
+		boolean result = false;
 		
 		
+		
+		return result;
+	}
+
+	public boolean eliminarProducto(Producto producto) {
+		// TODO Auto-generated method stub
+		boolean result = false;
+		
+		SQLiteDatabase db = this.getWritableDatabase();
+		//Si hemos abierto correctamente la base de datos
+		if(db != null){
+			
+			String sql1 = "DELETE FROM "+TablaProductos.tabla+" WHERE "+TablaProductos.id+"="+producto.getId()+";";
+			try{
+				db.execSQL(sql1);
+				result = true;
+			} catch (SQLException e){
+				Log.e(Constantes.LOG_TAG,"eliminarProducto() - SQLException");
+			}			
+		}		
+		
+		return result;
+	}
+	
+	public boolean eliminarProductoDespensa(ProductoDespensa producto) {
+		// TODO Auto-generated method stub
+		boolean result = false;
+		
+		SQLiteDatabase db = this.getWritableDatabase();
+		//Si hemos abierto correctamente la base de datos
+		if(db != null){
+			
+			String sql1 = "DELETE FROM "+TablaContenido.tabla+
+						" WHERE "+TablaContenido.idDespensa+" = " +producto.getIdDespensa()+" AND " +
+						" "+TablaContenido.idProducto+" = "+producto.getIdProducto()+";";
+			try{
+				db.execSQL(sql1);
+				result = true;
+			} catch (SQLException e){
+				Log.e(Constantes.LOG_TAG,"eliminarProductoDespensa() - SQLException");
+			}			
+		}		
+		
+		return result;
+	}
+	
+	public boolean eliminarProductoCompra(ProductoCompra producto) {
+		// TODO Auto-generated method stub
+		boolean result = false;
+		
+		SQLiteDatabase db = this.getWritableDatabase();
+		//Si hemos abierto correctamente la base de datos
+		if(db != null){
+			
+			String sql1 = "DELETE FROM "+TablaListaCompra.tabla+
+						" WHERE "+TablaListaCompra.idDespensa+" = " +producto.getIdDespensa()+" AND " +
+						" "+TablaListaCompra.idProducto+" = "+producto.getIdProducto()+";";
+			try{
+				db.execSQL(sql1);
+				result = true;
+			} catch (SQLException e){
+				Log.e(Constantes.LOG_TAG,"eliminarProductoCompra() - SQLException");
+			}			
+		}		
+		
+		return result;
+	}
+	
+	public boolean insertarProductoACompra(ProductoDespensa producto){
+		boolean result = false;
+		
+		SQLiteDatabase db = this.getReadableDatabase();
+		if (db != null){
+
+			ContentValues nuevoRegistro = new ContentValues();
+			
+			nuevoRegistro.put(TablaListaCompra.idDespensa, producto.getIdDespensa());			
+			nuevoRegistro.put(TablaListaCompra.idProducto,producto.getIdProducto());			
+			nuevoRegistro.put(TablaListaCompra.cantidadAComprar,producto.getStockMin());
+			
+			
+			//Insertamos el registro en la base de datos
+			long code = db.insert(TablaListaCompra.tabla, null, nuevoRegistro);
+			
+			if (code > 0)
+				result =true;
+			Log.i(Constantes.LOG_TAG,"insertarProductoACompra() - resultado db.insert(): "+code);
+		}
+	
+		db.close();
 		
 		return result;
 	}

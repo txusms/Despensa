@@ -1,7 +1,8 @@
 package es.marquesgomez;
 
-import es.marquesgomez.ListaProductos.AdaptadorProductos;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -106,7 +107,7 @@ public class ListaCompra extends Activity {
 			LayoutInflater inflater = context.getLayoutInflater();
 			View item = inflater.inflate(R.layout.listitem_compra, null);
 			
-			final long idProducto = listProductosCompra[position].getIdProducto();
+//			final long idProducto = listProductosCompra[position].getIdProducto();
 			
 			TextView lblNombreP = (TextView) item.findViewById(R.id.LblItemCompraNombre);
 			lblNombreP.setText(listProductosCompra[position].getNombre());
@@ -143,31 +144,51 @@ public class ListaCompra extends Activity {
 				}
 			});
 			
-//			imgSuma.setOnClickListener(new View.OnClickListener() {
-//				
-//				@Override
-//				public void onClick(View v) {
-//					// TODO Auto-generated method stub
+			imgSuma.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
 //					conexion.actualizarStockXidProducto(idProducto, Var.despensaSelec.getId(), 1);
-//					listarProductos();
-//				}
-//			});
-//			
-//			imgResta.setOnClickListener(new View.OnClickListener() {
-//				
-//				@Override
-//				public void onClick(View v) {
-//					// TODO Auto-generated method stub
+					listarProductosCompra();
+				}
+			});
+			
+			imgResta.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
 //					conexion.actualizarStockXidProducto(idProducto, Var.despensaSelec.getId(), -1);
-//					listarProductos();
-//				}
-//			});
+					listarProductosCompra();
+				}
+			});
 			
 			imgEliminar.setOnClickListener(new View.OnClickListener() {
 				
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
+					AlertDialog.Builder alert = new AlertDialog.Builder(context);
+					
+					alert.setTitle(listProductosCompra[position].getNombre());
+					alert.setMessage("Eliminar?");
+					
+					alert.setPositiveButton(R.string.aceptar, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+
+                        	ProductoCompra itemToEdit = listProductosCompra[position];
+                            if (conexion.eliminarProductoCompra(itemToEdit))
+                            	listarProductosCompra();
+                        }
+                    });
+
+                    alert.setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                        }
+                    });
+
+                    alert.show();
 //					conexion.actualizarStockXidProducto(idProducto, Var.despensaSelec.getId(), -1);
 					listarProductosCompra();
 				}

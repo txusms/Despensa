@@ -1,6 +1,8 @@
 package es.marquesgomez;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -152,6 +154,9 @@ public class ContenidoDespensa extends Activity {
 			// listarProductosDespensa(conexion);
 			// lblMensaje.setText("Etiqueta: Opcion 1 pulsada!");
 			return true;
+		case R.id.CtxProductoAñadirACompra:
+			insertarProductoACompra(listProductosDespensa[info.position]);
+			return true;
 		default:
 			return super.onContextItemSelected(item);
 		}
@@ -248,7 +253,7 @@ public class ContenidoDespensa extends Activity {
 			scanCode();
 			return true;
 		case R.id.OpcListaCompra:
-			conexion.generarListaCompra(Var.despensaSelec.getId());
+			generarCompra();
 			return true;
 		case R.id.OpcNuevoProducto:
 			añadirProducto("");
@@ -446,9 +451,9 @@ public class ContenidoDespensa extends Activity {
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
-					Toast.makeText(ContenidoDespensa.this,
-							"Producto: "+listProductosDespensa[position].getNombre(),
-							Toast.LENGTH_LONG).show();
+//					Toast.makeText(ContenidoDespensa.this,
+//							"Producto: "+listProductosDespensa[position].getNombre(),
+//							Toast.LENGTH_LONG).show();
 				}
 			});
 			
@@ -488,14 +493,57 @@ public class ContenidoDespensa extends Activity {
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
+					AlertDialog.Builder alert = new AlertDialog.Builder(context);
+					
+					alert.setTitle(listProductosDespensa[position].getNombre());
+					alert.setMessage("Eliminar?");
+					
+					alert.setPositiveButton(R.string.aceptar, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+
+                        	ProductoDespensa itemToEdit = listProductosDespensa[position];
+                            if (conexion.eliminarProductoDespensa(itemToEdit))
+                            	listarProductosDespensa();
+                        }
+                    });
+
+                    alert.setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                        }
+                    });
+
+                    alert.show();
+					
 //					conexion.actualizarStockXidProducto(idProducto, Var.despensaSelec.getId(), -1);
-					listarProductosDespensa();
+//					listarProductosDespensa();
 				}
 			});
 			
 			
 			return (item);
 		}
+	}
+	
+	private void generarCompra(){
+		
+		String msg;
+		if (conexion.generarListaCompra(Var.despensaSelec.getId()))
+			msg = "Lista generada";
+		else
+			msg = "Error en lista";
+		
+		Toast.makeText(ContenidoDespensa.this,msg,Toast.LENGTH_LONG).show();
+	}
+	
+	private void insertarProductoACompra(ProductoDespensa produc){
+		String msg;
+
+		if (conexion.insertarProductoACompra(produc))
+			msg="Producto añadido";
+		else
+			msg="Ya estaba en \nla lista";
+		
+		Toast.makeText(ContenidoDespensa.this,msg,Toast.LENGTH_LONG).show();
 	}
 
 }

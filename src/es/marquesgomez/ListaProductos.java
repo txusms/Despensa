@@ -1,14 +1,18 @@
 package es.marquesgomez;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.text.Editable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -104,19 +108,14 @@ public class ListaProductos extends Activity {
 			LayoutInflater inflater = context.getLayoutInflater();
 			View item = inflater.inflate(R.layout.listitem_producto, null);
 			
-			final long idProducto = listProductos[position].getId();
+//			final long idProducto = listProductos[position].getId();
 			
 			TextView lblNombreP = (TextView) item.findViewById(R.id.LblItemProductoNombre);
 			lblNombreP.setText(listProductos[position].getNombre());
-//			TextView lblCantidadP = (TextView) item.findViewById(R.id.LblItemDespensaCantidad);
-//			ImageView imgSuma = (ImageView)item.findViewById(R.id.ImgItemDespensaSuma);
-//			ImageView imgResta = (ImageView)item.findViewById(R.id.ImgItemDespensaResta);
+			TextView lblCodigoBarras = (TextView) item.findViewById(R.id.LblItemProductoCodigoBarras);
+			lblCodigoBarras.setText(listProductos[position].getCodigoBarras());
+			ImageView imgAñadir = (ImageView)item.findViewById(R.id.ImgItemProductoAñadirADespensa);
 			ImageView imgEliminar = (ImageView)item.findViewById(R.id.ImgItemProductoEliminar);
-			
-//			int stock = listProductos[position].getStock();
-//			lblCantidadP.setText(Integer.toString(stock));
-//			if (listProductos[position].getStock() <= listProductos[position].getStockMin())
-//				lblCantidadP.setTextColor(Color.RED);
 						
 			//Evento al hacer click a un item
 			item.setOnClickListener(new View.OnClickListener() {
@@ -136,36 +135,96 @@ public class ListaProductos extends Activity {
 				public boolean onLongClick(View v) {
 					// TODO Auto-generated method stub
 					//Implementar alertDialog para editar el producto.
-					registerForContextMenu(lstProductos);
+//					registerForContextMenu(lstProductos);
+//					return true;
+					AlertDialog.Builder alert = new AlertDialog.Builder(context);
+
+                    alert.setTitle("Editar "+listProductos[position].getNombre());
+
+                    // Set an EditText view to get user input
+                    final EditText input = new EditText(context);
+                    input.setText(listProductos[position].getNombre());
+                    alert.setView(input);
+
+                    alert.setPositiveButton(R.string.aceptar, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+
+                            Editable value = input.getText();
+                            if (value.toString().equals(""))
+                                return;
+
+                            Producto itemToEdit = listProductos[position];
+                            itemToEdit.setNombre(value.toString());
+//                            update(itemToEdit);
+//                            if (conexion.updateProducto(itemToEdit))
+                            	listarProductos();
+                        }
+                    });
+
+                    alert.setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                        }
+                    });
+
+                    alert.show();
+					
 					return false;
 				}
 			});
 			
-//			imgSuma.setOnClickListener(new View.OnClickListener() {
-//				
-//				@Override
-//				public void onClick(View v) {
-//					// TODO Auto-generated method stub
-//					conexion.actualizarStockXidProducto(idProducto, Var.despensaSelec.getId(), 1);
-//					listarProductos();
-//				}
-//			});
-//			
-//			imgResta.setOnClickListener(new View.OnClickListener() {
-//				
-//				@Override
-//				public void onClick(View v) {
-//					// TODO Auto-generated method stub
-//					conexion.actualizarStockXidProducto(idProducto, Var.despensaSelec.getId(), -1);
-//					listarProductos();
-//				}
-//			});
+			imgAñadir.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					// Create an input dialog
+					String msg;
+					Producto producto = listProductos[position];
+
+					if (conexion.insertarProductoADespensa(producto.getId(), Var.despensaSelec.getId(), 1, 0))
+						msg="Producto añadido";
+					else
+						msg="Ya estaba en \nla despensa";
+					
+					Toast.makeText(ListaProductos.this,msg,Toast.LENGTH_LONG).show();
+				}
+			});
 			
 			imgEliminar.setOnClickListener(new View.OnClickListener() {
 				
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
+					// Create an input dialog
+
+					AlertDialog.Builder alert = new AlertDialog.Builder(context);
+					
+					alert.setTitle("Eliminar "+listProductos[position].getNombre());
+					
+					alert.setMessage("Eliminando este producto, se eliminará de las despensas y listas de la compra. ¿Desea continuar?");
+					
+					alert.setPositiveButton(R.string.aceptar, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+
+//                            Editable value = input.getText();
+//                            if (value.toString().equals(""))
+//                                return;
+//
+//                            Producto itemToEdit = listProductos[position];
+//                            itemToEdit.setNombre(value.toString());
+//                            update(itemToEdit);
+                        	Producto itemToEdit = listProductos[position];
+                            if (conexion.eliminarProducto(itemToEdit))
+                            	listarProductos();
+                        }
+                    });
+
+                    alert.setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                        }
+                    });
+
+                    alert.show();
 //					conexion.actualizarStockXidProducto(idProducto, Var.despensaSelec.getId(), -1);
 					listarProductos();
 				}
