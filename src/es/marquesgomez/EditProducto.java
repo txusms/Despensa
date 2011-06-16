@@ -118,6 +118,16 @@ public class EditProducto extends Activity {
 				scanCode();
 			}
 		});
+        
+        txtBarCode.setOnLongClickListener(new View.OnLongClickListener() {
+			
+			@Override
+			public boolean onLongClick(View v) {
+				// TODO Auto-generated method stub
+				scanCode();
+				return true;
+			}
+		});
               
 	}
 	
@@ -164,7 +174,7 @@ public class EditProducto extends Activity {
 			
 		} else {
 			Log.d(Constantes.LOG_TAG, "guardarProducto() - NO OK");
-			Toast.makeText(EditProducto.this,"Producto no introducido",Toast.LENGTH_SHORT).show();
+			Toast.makeText(EditProducto.this,"Producto no \nintroducido",Toast.LENGTH_SHORT).show();
 		}
 		
 		

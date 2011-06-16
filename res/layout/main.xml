@@ -1,10 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    >
+    		  android:orientation="vertical"
+    		  android:layout_width="fill_parent"
+    		  android:layout_height="fill_parent"
+    		  android:id="@+id/main"
+    	>
+    <ListView android:id="@+id/LstOpciones"
+    		  android:layout_height="fill_parent"
+    		  android:layout_width="fill_parent"
+    		  android:cacheColorHint="#3500ffff"
+    		  android:layout_weight="1.0" 
+    		  
+    		  />
+    <TextView
+            android:id="@+id/mainListViewBackgroundText"
+            android:layout_height="fill_parent"
+            android:layout_width="fill_parent"
+            android:text="Lista vacia. Añade una despensa desde el botón +"
+            android:layout_weight="1.0"
+            android:gravity="center"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:textColor="#3500ffff"
+            android:textSize="20dip"
+            />
 
+    <RelativeLayout
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:padding="10dip"
+            >
+            
+         <Button
+                android:id="@+id/BtnAñadir"
+                android:layout_centerInParent="true"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="Añadir"
+                android:textStyle="bold"
+                android:textSize="18dip"
+                android:textColor="#000000"
+                android:drawableRight="@drawable/add"
+                android:drawablePadding="10dip"
+                android:paddingLeft="15dip"
+                android:paddingRight="15dip"
+                /> 
+    </RelativeLayout>
+<!-- 
 <TextView android:text="@string/nombre"
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content" />
@@ -18,10 +60,8 @@
     <Button android:id="@+id/BtnAñadir" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/hola"></Button>
     <Button android:id="@+id/BtnEliminar" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/eliminar"></Button>
     <Button android:id="@+id/BtnProducto" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Producto"></Button>
-</LinearLayout>
+</LinearLayout> -->
 	
-<ListView android:id="@+id/LstOpciones" 
-    android:layout_height="wrap_content" 
-    android:layout_width="fill_parent" />
+
 
 </LinearLayout>

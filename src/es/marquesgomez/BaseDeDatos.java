@@ -307,13 +307,13 @@ public class BaseDeDatos extends SQLiteOpenHelper{
 	 * @param desp
 	 * @return resultado
 	 */
-	public boolean eliminarDespensa(String desp){
+	public boolean eliminarDespensa(Despensa desp){
 		Log.d(Constantes.LOG_TAG, "eliminarDespensa() - Despensa: "+desp);
 		boolean result = false;
 		SQLiteDatabase db = this.getWritableDatabase();
 		//Si hemos abierto correctamente la base de datos
 		if(db != null){
-			db.execSQL("DELETE FROM "+TablaDespensas.tabla+" WHERE "+TablaDespensas.nombre+"='"+desp+"' ");
+			db.execSQL("DELETE FROM "+TablaDespensas.tabla+" WHERE "+TablaDespensas.id+"='"+desp.getId()+"' ");
 			
 			result = true;
 		}
