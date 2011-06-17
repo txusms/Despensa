@@ -242,8 +242,10 @@ public final class IntentIntegrator {
       if (resultCode == Activity.RESULT_OK) {
         String contents = intent.getStringExtra("SCAN_RESULT");
         String formatName = intent.getStringExtra("SCAN_RESULT_FORMAT");
+        Log.i(Constantes.LOG_TAG,"IntentIntegrator()- parseActivityResult() - contents: "+contents+" formatName: "+formatName);
         return new IntentResult(contents, formatName);
       } else {
+    	  Log.i(Constantes.LOG_TAG,"IntentIntegrator()- parseActivityResult() - else");
         return new IntentResult(null, null);
       }
     }

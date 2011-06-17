@@ -215,7 +215,7 @@ public class ListaDespensas extends Activity {
         	adaptador = new AdaptadorListaDespensas(this);
         	lstOpciones.setVisibility(View.INVISIBLE);
         	txtBackground.setVisibility(ListView.VISIBLE);
-        	Toast.makeText(ListaDespensas.this,"No existe ninguna despensa",Toast.LENGTH_LONG).show();
+//        	Toast.makeText(ListaDespensas.this,"No existe ninguna despensa",Toast.LENGTH_LONG).show();
         }
         
         lstOpciones.setAdapter(adaptador);

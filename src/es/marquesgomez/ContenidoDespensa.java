@@ -30,12 +30,10 @@ public class ContenidoDespensa extends Activity {
 
 	private BaseDeDatos conexion;
 	private int resultEstadoCodBarras;
-	private Button btnScan;
 	private String barCodeFinal;
 	private boolean teclaMenu = false;
 	private ProductoDespensa[] listProductosDespensa;
 	private ListView lstProductosDespensa;
-//	private AdaptadorProductosDespensa adaptador;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -44,20 +42,15 @@ public class ContenidoDespensa extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.productos_despensa);
 
-		Log.d(Constantes.LOG_TAG, "ContenidoDespensa.java - onCreate()2");
 		//Conexión base de datos
 		this.conexion = Var.conexion;
-		Log.d(Constantes.LOG_TAG, "ContenidoDespensa.java - onCreate()3");
-		btnScan = (Button) findViewById(R.id.BtnScan);
-		Log.d(Constantes.LOG_TAG, "ContenidoDespensa.java - onCreate()4");
 		Button btnProductos = (Button) findViewById(R.id.BtnProductos);
-		Log.d(Constantes.LOG_TAG, "ContenidoDespensa.java - onCreate()5");
 		Button btnListaCompra = (Button) findViewById(R.id.BtnLista);
+		Button btnNuevoProducto = (Button) findViewById(R.id.BtnNuevoProducto);
 		
 
 		TextView txtMensaje = (TextView) findViewById(R.id.TxtMensaje);
-		Log.d(Constantes.LOG_TAG, "ContenidoDespensa.java - onCreate()7");
-		listarProductosDespensa();
+//		listarProductosDespensa();
 		
 				
 		//Establece el mensaje principal
@@ -90,17 +83,55 @@ public class ContenidoDespensa extends Activity {
 
 			}
 		});
+		
+		btnNuevoProducto.setOnClickListener(new View.OnClickListener() {
 
-		btnScan.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View arg0) {
-				Log.d(Constantes.LOG_TAG, "ContenidoDespensa.java - btmScan.onClik()");
-
-				scanCode();
-
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				añadirProducto("");
 			}
 		});
+		
 		Log.d(Constantes.LOG_TAG,"ContenidoDespensa.java - Fin onCreate()");
 	}//Fin onCreate()
+	
+	@Override
+	protected void onStart(){
+		Log.i(Constantes.LOG_TAG,"ContenidoDespensas.java - onStart()");
+		super.onStart();
+		listarProductosDespensa();
+	}
+	
+//	@Override
+//	protected void onResume(){
+//		Log.i(Constantes.LOG_TAG,"ContenidoDespensas.java - onResume()");
+//		super.onResume();
+//	}
+//	
+//	@Override
+//	protected void onRestart(){
+//		Log.i(Constantes.LOG_TAG,"ContenidoDespensas.java - onRestart()");
+//		super.onRestart();
+//	}
+//	
+//	@Override
+//	protected void onPause(){
+//		Log.i(Constantes.LOG_TAG,"ContenidoDespensas.java - onPause()");
+//		super.onPause();
+//	}
+//	
+//	@Override
+//	protected void onStop(){
+//		Log.i(Constantes.LOG_TAG,"ContenidoDespensas.java - onStop()");
+//		super.onStop();
+//	}
+//	
+//	@Override
+//	protected void onDestroy(){
+//		Log.i(Constantes.LOG_TAG,"ContenidoDespensas.java - onDestroy()");
+//		super.onDestroy();
+//	}
 
 	// EVITAR QUE NUESTRA ACTIVIDAD COMIENCE DE NUEVO AL ROTAR LA PANTALLA
 	@Override
@@ -329,11 +360,11 @@ public class ContenidoDespensa extends Activity {
 
 	/* Here is where we come back after the Barcode Scanner is done */
 	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-		Log.d(Constantes.LOG_TAG, "ContenidoDespensa.java - onActivityResult()");
+		Log.d(Constantes.LOG_TAG, "ContenidoDespensa.java - onActivityResult() requestCode: "+requestCode+" resultCode: "+resultCode);
 
-		IntentResult scanResult = IntentIntegrator.parseActivityResult(
-				requestCode, resultCode, intent);
-		if (scanResult != null) {
+		IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+		
+		if (scanResult.getContents() != null) {
 
 			// handle scan result
 			String contents = intent.getStringExtra("SCAN_RESULT");
@@ -371,6 +402,7 @@ public class ContenidoDespensa extends Activity {
 		listProductosDespensa = conexion.getProductosDespensa(Var.despensaSelec.getId());
 		AdaptadorProductosDespensa adaptador;
 		lstProductosDespensa = (ListView) findViewById(R.id.LstProductosDespensa);
+		TextView txtBackground = (TextView)findViewById(R.id.mainTextBackground);
 		
 		Log.d(Constantes.LOG_TAG,"listarProductosDespensa() - Antes del if null");
 
@@ -382,6 +414,7 @@ public class ContenidoDespensa extends Activity {
 
 			lstProductosDespensa.setVisibility(View.VISIBLE);
 			registerForContextMenu(lstProductosDespensa);
+			txtBackground.setVisibility(ListView.GONE);
 
 			lstProductosDespensa
 					.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -406,9 +439,10 @@ public class ContenidoDespensa extends Activity {
 			Log.d(Constantes.LOG_TAG,"listarProductosDespensas() - No existen productos en despensa");
 			adaptador = new AdaptadorProductosDespensa(this);
 			lstProductosDespensa.setVisibility(View.INVISIBLE);
-			Toast.makeText(ContenidoDespensa.this,
-					"No existe ningun \nproducto en despensa",
-					Toast.LENGTH_LONG).show();
+			txtBackground.setVisibility(ListView.VISIBLE);
+//			Toast.makeText(ContenidoDespensa.this,
+//					"No existe ningun \nproducto en despensa",
+//					Toast.LENGTH_LONG).show();
 		}
 
 		lstProductosDespensa.setAdapter(adaptador);

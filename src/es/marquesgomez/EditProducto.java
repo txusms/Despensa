@@ -107,6 +107,9 @@ public class EditProducto extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				//guardarProducto();
+//				this.dispatchKeyEvent(new Keyevent(ACTION_DOWN, KEYCODE_BACK));
+				finish();
+//				EditProducto.onBackPressed();
 			}
 		});
         
@@ -156,12 +159,13 @@ public class EditProducto extends Activity {
 	protected void guardarProducto() {
 		// TODO Auto-generated method stub
 		Log.d(Constantes.LOG_TAG, "guardarProducto()");
+		Producto nuevoProducto = new Producto();
 		
-		String nombreProducto = txtNombre.getText().toString();
-		String codebar = txtBarCode.getText().toString();
-		String notas = txtNotas.getText().toString();
+		nuevoProducto.setNombre(txtNombre.getText().toString().trim());
+		nuevoProducto.setCodigoBarras(txtBarCode.getText().toString().trim());
+		nuevoProducto.setNotas(txtNotas.getText().toString().trim());
 		
-		long idProducto = conexion.insertarProducto(nombreProducto, codebar, cmbCategorias.getSelectedItemPosition(), notas);
+		long idProducto = conexion.insertarProducto(nuevoProducto);
 		
 		if (idProducto>0){
 			if (chbAñadirEnDespensa.isChecked()){
@@ -192,11 +196,11 @@ public class EditProducto extends Activity {
 
 	/* Here is where we come back after the Barcode Scanner is done */
 	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-		Log.d(Constantes.LOG_TAG, "FrmMensaje.java - onActivityResult()");
+		Log.d(Constantes.LOG_TAG, "EditProducto.java - onActivityResult()");
 
 		IntentResult scanResult = IntentIntegrator.parseActivityResult(
 				requestCode, resultCode, intent);
-		if (scanResult != null) {
+		if (scanResult.getContents() != null) {
 
 			// handle scan result
 			String contents = intent.getStringExtra("SCAN_RESULT");

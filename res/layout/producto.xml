@@ -23,7 +23,7 @@
 			android:id="@+id/linearLayout4" android:layout_height="wrap_content">
 			<EditText android:layout_weight="1" android:layout_height="wrap_content"
 				android:layout_width="fill_parent" android:id="@+id/txtBarCode"
-				android:hint="Mantener pulsado para escanear"></EditText>
+				android:hint="Mantener para escanear"></EditText>
 			<ImageView android:layout_height="fill_parent"
 				android:layout_width="wrap_content" android:id="@+id/imgScanP"
 				android:src="@drawable/barcode_scanner"></ImageView>

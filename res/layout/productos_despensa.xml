@@ -9,12 +9,70 @@
     	android:text="$mensaje" 
     	android:layout_width="fill_parent" 
     	android:layout_height="wrap_content" />
-    <LinearLayout android:orientation="horizontal" android:layout_height="wrap_content" android:id="@+id/linearLLayout1" android:layout_width="fill_parent">
+    
+    <ListView android:id="@+id/LstProductosDespensa" 
+    		  android:layout_height="wrap_content" 
+    		  android:layout_width="fill_parent"
+    		  android:layout_weight="1.0"></ListView>
+    <TextView
+            android:id="@+id/mainTextBackground"
+            android:layout_height="fill_parent"
+            android:layout_width="fill_parent"
+            android:text="Lista vacia. Puedes añadir productos desde 'Nuevo', seleccionarlo desde la lista de productos y también puedes escaneando su código de barras. "
+            android:layout_weight="1.0"
+            android:gravity="center"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:textColor="#3500ffff"
+            android:textSize="20dip"
+            />
+    <RelativeLayout
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:padding="10dip"
+            >
+       <LinearLayout android:id="@+id/linearLayout1" 
+			  	  android:layout_gravity="center_vertical|center_horizontal" 
+			  	  android:layout_height="wrap_content" 
+			  	  android:layout_width="match_parent" 
+			  	  android:baselineAligned="true"
+			  	  >
+		         <Button
+		                android:id="@+id/BtnLista"
+		                android:layout_centerInParent="true"
+		                android:layout_height="wrap_content"
+		                android:layout_width="wrap_content"
+		                android:text="Lista"
+		                android:textStyle="bold"
+		                android:textSize="18dip"
+		                android:textColor="#000000" 
+		                android:layout_weight="1"/> 
+		     		<Button
+		                android:id="@+id/BtnNuevoProducto"
+		                android:layout_centerInParent="true"
+		                android:layout_height="wrap_content"
+		                android:layout_width="wrap_content"
+		                android:text="Nuevo"
+		                android:textStyle="bold"
+		                android:textSize="18dip"
+		                android:textColor="#000000" 
+		                android:layout_weight="1"/> 
+		            <Button
+		                android:id="@+id/BtnProductos"
+		                android:layout_centerInParent="true"
+		                android:layout_height="wrap_content"
+		                android:layout_width="wrap_content"
+		                android:text="Productos"
+		                android:textStyle="bold"
+		                android:textSize="18dip"
+		                android:textColor="#000000" 
+		                android:layout_weight="1"/> 
+         </LinearLayout>
+    </RelativeLayout> 
+    
+    <!-- <LinearLayout android:orientation="horizontal" android:layout_height="wrap_content" android:id="@+id/linearLLayout1" android:layout_width="fill_parent">
         <Button android:id="@+id/BtnScan" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Scan"></Button>
         <Button android:id="@+id/BtnProductos" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Productos"></Button>
-        <Button android:id="@+id/BtnDespensa" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Despensa"></Button>
         <Button android:id="@+id/BtnLista" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Lista"></Button>
-    </LinearLayout>
-    <ListView android:id="@+id/LstProductosDespensa" android:layout_height="wrap_content" android:layout_width="fill_parent"></ListView>
-    	  
+    </LinearLayout> -->
 </LinearLayout>

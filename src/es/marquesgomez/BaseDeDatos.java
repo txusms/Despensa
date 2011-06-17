@@ -477,22 +477,24 @@ public class BaseDeDatos extends SQLiteOpenHelper{
 	 * @param notas
 	 * @return long
 	 */
-	public long insertarProducto(String nombre, String codigoBarras, int categoria, String notas){
+	public long insertarProducto(Producto producto){
 		Log.d(Constantes.LOG_TAG, "insertarProducto() - ");
 		long result = 0;
+		
+		//String nombre, String codigoBarras, int categoria, String notas
 		
 		SQLiteDatabase db = this.getReadableDatabase();
 		if (db != null){
 
 			ContentValues nuevoRegistro = new ContentValues();
 			
-			nuevoRegistro.put(TablaProductos.nombre, nombre.toString());
-			if (codigoBarras.trim().length() != 0)
-				nuevoRegistro.put(TablaProductos.codBarras,codigoBarras.toString());
+			nuevoRegistro.put(TablaProductos.nombre, producto.getNombre());
+			if (producto.getCodigoBarras().trim().length() != 0)
+				nuevoRegistro.put(TablaProductos.codBarras,producto.getCodigoBarras());
 			
-			nuevoRegistro.put(TablaProductos.idCategoria,categoria);
+			nuevoRegistro.put(TablaProductos.idCategoria,producto.getIdCategoria());
 			
-			nuevoRegistro.put(TablaProductos.notas,notas.toString());
+			nuevoRegistro.put(TablaProductos.notas,producto.getNotas());
 			
 			//Insertamos el registro en la base de datos
 			result = db.insert(TablaProductos.tabla, null, nuevoRegistro);
