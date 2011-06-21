@@ -2,7 +2,6 @@
 <menu
   xmlns:android="http://schemas.android.com/apk/res/android">
   
-  <item android:id="@+id/CtxEliminar"
-	android:title="Eliminar"></item>
+  <item android:id="@+id/CtxDuplicarDespensa" android:title="Duplicar"></item>
   
 </menu>

@@ -286,9 +286,6 @@ public class ContenidoDespensa extends Activity {
 		case R.id.OpcListaCompra:
 			generarCompra();
 			return true;
-		case R.id.OpcNuevoProducto:
-			añadirProducto("");
-			return true;
 		default:
 			return super.onContextItemSelected(item);
 		}

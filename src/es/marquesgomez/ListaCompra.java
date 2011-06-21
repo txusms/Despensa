@@ -46,6 +46,7 @@ public class ListaCompra extends Activity {
 		listProductosCompra = conexion.getProductosCompra(Var.despensaSelec.getId());
 		AdaptadorProductosCompra adaptador;
 		lstProductosCompra = (ListView) findViewById(R.id.LstProductosCompra);
+		TextView txtBackground = (TextView)findViewById(R.id.lista_compraTextBackground);
 		
 		Log.d(Constantes.LOG_TAG,"listarProductosCompra() - Antes del if null");
 
@@ -57,6 +58,7 @@ public class ListaCompra extends Activity {
 
 			lstProductosCompra.setVisibility(View.VISIBLE);
 //			registerForContextMenu(lstProductos);
+			txtBackground.setVisibility(ListView.GONE);
 			Log.d(Constantes.LOG_TAG,"listarProductos() - Despues de register");
 
 			lstProductosCompra
@@ -82,9 +84,7 @@ public class ListaCompra extends Activity {
 			Log.d(Constantes.LOG_TAG,"listarProductos() - No existen productos en despensa");
 			adaptador = new AdaptadorProductosCompra(this);
 			lstProductosCompra.setVisibility(View.INVISIBLE);
-			Toast.makeText(ListaCompra.this,
-					"No existe ningun \nproducto para comprar",
-					Toast.LENGTH_LONG).show();
+			txtBackground.setVisibility(ListView.VISIBLE);
 		}
 
 		lstProductosCompra.setAdapter(adaptador);

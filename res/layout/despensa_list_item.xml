@@ -24,14 +24,14 @@
             >
         <ImageView
                 android:id="@+id/ImgItemMainEditar"
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:src="@drawable/edit"
                 android:layout_marginRight="20dp"/>
         <ImageView
                 android:id="@+id/ImgItemMainEliminar"
-                android:layout_height="fill_parent"
-                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_width="50dp"
                 android:layout_toRightOf="@id/ImgItemMainEditar"
                 android:src="@drawable/trash_full"
                 />

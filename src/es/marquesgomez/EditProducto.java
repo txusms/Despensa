@@ -54,6 +54,7 @@ public class EditProducto extends Activity {
         
         cmbCategorias = (Spinner)findViewById(R.id.CmbCategorias);
         
+        
         final String[] datos = new String[]{"Elem1","Elem2","Elem3","Elem4","Elem5"};
     	ArrayAdapter<String> adaptador = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, datos);
         
@@ -159,11 +160,25 @@ public class EditProducto extends Activity {
 	protected void guardarProducto() {
 		// TODO Auto-generated method stub
 		Log.d(Constantes.LOG_TAG, "guardarProducto()");
-		Producto nuevoProducto = new Producto();
+		final Producto nuevoProducto = new Producto();
 		
 		nuevoProducto.setNombre(txtNombre.getText().toString().trim());
 		nuevoProducto.setCodigoBarras(txtBarCode.getText().toString().trim());
 		nuevoProducto.setNotas(txtNotas.getText().toString().trim());
+//		nuevoProducto.setIdCategoria(0);
+		
+		
+//		cmbCategorias.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//			public void onItemSelected(AdapterView<?> parent, android.view.View v, int position, long id) {
+//				Log.i(Constantes.LOG_TAG,"Categoria seleccionada: "+parent.getItemAtPosition(position)+" "+(Integer) parent.getItemAtPosition(position));
+//				nuevoProducto.setIdCategoria((Integer) parent.getItemAtPosition(position));
+//			}
+//			@Override
+//            public void onNothingSelected(AdapterView<?> arg0) {
+//                // TODO Auto-generated method stub
+//                nuevoProducto.setIdCategoria(cmbCategorias.getChildCount());
+//            } 
+//		});
 		
 		long idProducto = conexion.insertarProducto(nuevoProducto);
 		

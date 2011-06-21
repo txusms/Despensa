@@ -17,6 +17,5 @@
     <group android:id="@+id/OpcGrpPrincipal">
         <item android:id="@+id/OpcScan" android:title="Scan Code"></item>
         <item android:id="@+id/OpcListaCompra" android:title="Generar Lista"></item>
-        <item android:id="@+id/OpcNuevoProducto" android:title="Producto Nuevo"></item>
     </group>
 </menu>

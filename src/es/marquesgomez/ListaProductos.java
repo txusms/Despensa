@@ -186,7 +186,7 @@ public class ListaProductos extends Activity {
 					else
 						msg="Ya estaba en \nla despensa";
 					
-					Toast.makeText(ListaProductos.this,msg,Toast.LENGTH_LONG).show();
+					Toast.makeText(ListaProductos.this,msg,Toast.LENGTH_SHORT).show();
 				}
 			});
 			
