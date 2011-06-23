@@ -2,49 +2,68 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="vertical" android:layout_width="fill_parent"
-	android:layout_height="fill_parent">
+	android:layout_height="fill_parent" android:fillViewport="true">
 	
-	<LinearLayout android:orientation="vertical" 
-				android:layout_height="fill_parent"
-            	android:layout_width="fill_parent"
-            	android:cacheColorHint="#3500ffff"
-            	android:layout_weight="1.0">
-		<TextView android:text="Rellena los campos:" android:id="@+id/textView1"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
-		<TextView android:text="Nombre:" android:id="@+id/textView2"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
-		<EditText android:text="" android:layout_width="fill_parent"
-			android:layout_height="wrap_content" android:id="@+id/txtNombreP">
-			<requestFocus></requestFocus>
-		</EditText>
-		<TextView android:text="Codigo:" android:id="@+id/textView3"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
-		<LinearLayout android:layout_width="match_parent"
-			android:id="@+id/linearLayout4" android:layout_height="wrap_content">
-			<EditText android:layout_weight="1" android:layout_height="wrap_content"
-				android:layout_width="fill_parent" android:id="@+id/txtBarCode"
-				android:hint="Mantener para escanear"></EditText>
-			<ImageView android:layout_height="fill_parent"
-				android:layout_width="wrap_content" android:id="@+id/imgScanP"
-				android:src="@drawable/barcode_scanner"></ImageView>
+	<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent" android:fillViewport="true" android:layout_weight="1.0">
+	
+		<LinearLayout android:id="@+id/LinearLayout01" android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="wrap_content">
+		
+			<TextView android:text="Rellena los campos:" android:id="@+id/LblProductoCabecera"
+				android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_gravity="center_vertical|center_horizontal" android:background="#808080"></TextView>
+			<TextView android:text="Nombre:" android:id="@+id/textView2"
+				android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1"></TextView>
+			<EditText android:text="" android:layout_width="fill_parent"
+				android:layout_height="wrap_content" android:id="@+id/txtNombreP" android:layout_weight="1">
+				<requestFocus></requestFocus>
+			</EditText>
+			<TextView android:text="Codigo:" android:id="@+id/textView3"
+				android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1"></TextView>
+			<LinearLayout android:layout_width="match_parent"
+				android:id="@+id/linearLayout4" android:layout_height="wrap_content" android:layout_weight="1">
+				<EditText android:layout_weight="1" android:layout_height="wrap_content"
+					android:layout_width="fill_parent" android:id="@+id/txtBarCode"
+					android:hint="Mantener para escanear"></EditText>
+				<ImageView android:layout_height="fill_parent"
+					android:layout_width="wrap_content" android:id="@+id/imgScanP"
+					android:src="@drawable/barcode_scanner"></ImageView>
+			</LinearLayout>
+			<TextView android:text="Notas:" android:layout_height="wrap_content" android:id="@+id/textView4" android:layout_width="wrap_content" android:layout_weight="1"></TextView>
+			<EditText android:layout_height="wrap_content" android:id="@+id/txtNotas" android:layout_width="fill_parent" android:layout_weight="1"></EditText>
+			<Spinner android:id="@+id/CmbCategorias" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="1"></Spinner>
+			<LinearLayout android:id="@+id/linearLayout2" android:layout_height="wrap_content" android:layout_width="match_parent">
+				<TextView android:text="Multiplicador: " android:id="@+id/textView1" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+				<EditText android:text="1" android:layout_height="wrap_content" android:layout_width="60px" android:inputType="number" android:id="@+id/txtMultiplicador"></EditText>
+				<CheckBox android:id="@+id/chbAGranell" android:text="A Granell" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_gravity="right"></CheckBox>
+			</LinearLayout>
+			<CheckBox android:text="Añadir en despensa" android:id="@+id/chbAñadirEnDespensa"
+				android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1"></CheckBox>
+			<LinearLayout android:orientation="vertical"
+				android:layout_height="wrap_content" android:id="@+id/LytStock"
+				android:layout_width="fill_parent" android:layout_weight="1">
+				<TableLayout android:layout_height="wrap_content" android:layout_width="match_parent" android:id="@+id/tableLayout1">
+					<TableRow android:id="@+id/tableRow1" android:layout_width="wrap_content" android:layout_height="wrap_content">
+						<TextView android:text="Cantidad: " android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/textView5"></TextView>
+						<EditText android:text="0" android:layout_height="wrap_content" android:layout_width="60px" android:inputType="number" android:id="@+id/txtCantidad"></EditText>
+					</TableRow>
+					<TableRow android:id="@+id/tableRow2" android:layout_width="wrap_content" android:layout_height="wrap_content">
+						<TextView android:text="Cantidad minima: " android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/textView6"></TextView>
+						<EditText android:text="0" android:layout_height="wrap_content" android:layout_width="60px" android:inputType="number" android:id="@+id/txtCantidadMinima"></EditText>
+					</TableRow>
+					<TableRow android:id="@+id/tableRow3" android:layout_width="wrap_content" android:layout_height="wrap_content">
+						<TextView android:text="Cantidad a comprar: " android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/textView7"></TextView>
+						<EditText android:text="0" android:layout_height="wrap_content" android:layout_width="60px" android:inputType="number" android:id="@+id/txtCantidadAComprar"></EditText>
+					</TableRow>
+					<TableRow android:id="@+id/tableRow4" android:layout_width="wrap_content" android:layout_height="wrap_content"></TableRow>
+				</TableLayout>
+			</LinearLayout>
+			
 		</LinearLayout>
-		<CheckBox android:text="Añadir en despensa" android:id="@+id/chbAñadirEnDespensa"
-			android:layout_width="wrap_content" android:layout_height="wrap_content"></CheckBox>
-		<LinearLayout android:orientation="horizontal"
-			android:layout_height="wrap_content" android:id="@+id/LytStock"
-			android:layout_width="fill_parent">
-			<TextView android:text="Cantidad:" android:layout_width="wrap_content" android:id="@+id/textView5" android:layout_height="wrap_content"></TextView>
-			<EditText android:layout_width="60px" android:id="@+id/txtCantidad" android:inputType="number" android:layout_height="wrap_content" android:text="0"></EditText>
-			<TextView android:text="Cantidad minima:" android:layout_width="wrap_content" android:id="@+id/textView6" android:layout_height="wrap_content"></TextView>
-			<EditText android:layout_width="60px" android:id="@+id/txtCantidadMinima" android:inputType="number" android:layout_height="wrap_content" android:text="0"></EditText>
-		</LinearLayout>
-		<TextView android:text="Notas:" android:layout_height="wrap_content" android:id="@+id/textView4" android:layout_width="wrap_content"></TextView>
-		<EditText android:layout_height="wrap_content" android:id="@+id/txtNotas" android:layout_width="fill_parent"></EditText>
-		<Spinner android:id="@+id/CmbCategorias" android:layout_width="fill_parent" android:layout_height="wrap_content"></Spinner>
-	</LinearLayout>
+	</ScrollView>
 	
 	
-	<RelativeLayout android:layout_width="fill_parent"
+ 	<RelativeLayout android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:layout_gravity="center_vertical|center_horizontal"
         android:padding="10dip"

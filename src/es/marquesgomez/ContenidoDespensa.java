@@ -79,6 +79,7 @@ public class ContenidoDespensa extends Activity {
 				// TODO Auto-generated method stub
 
 				 Intent intent = new Intent(ContenidoDespensa.this, ListaCompra.class);
+//				Intent intent = new Intent(ContenidoDespensa.this, TestScrollView.class);
 				 startActivity(intent);
 
 			}
@@ -180,6 +181,14 @@ public class ContenidoDespensa extends Activity {
 			// lblMensaje.setText("Etiqueta: Opcion 1 pulsada!");
 			return true;
 		case R.id.CtxProductoEditar:
+
+			Intent intent = new Intent(ContenidoDespensa.this, EditProducto.class);
+
+			Bundle bundle = new Bundle();
+			bundle.putLong(Constantes.ID_PRODUCTO_EDIT, listProductosDespensa[info.position].getIdProducto());
+			bundle.putInt(Constantes.ACCION, Constantes.ACCION_EDIT_DESPENSA);
+			intent.putExtras(bundle);
+			startActivity(intent);
 			// if
 			// (conexion.eliminarDespensa(lstProductosDespensa.getAdapter().getItem(info.position).toString()))
 			// listarProductosDespensa(conexion);
@@ -295,17 +304,25 @@ public class ContenidoDespensa extends Activity {
 		// TODO Auto-generated method stub
 		Log.d(Constantes.LOG_TAG, "añadirProductoADespensa() - barCode: "
 				+ barCode);
+		ProductoDespensa producto;
 
 		String toastMensaje = "";
 		long idProducto = conexion.getIdProductoXBarCode(barCode);
-		Log.d(Constantes.LOG_TAG, "añadirProductoADespensa() - idProducto: "
-				+ idProducto);
-		if (idProducto > 0)
-			if (conexion.insertarProductoADespensa(idProducto, Var.despensaSelec.getId(),1,0))
+		Log.d(Constantes.LOG_TAG, "añadirProductoADespensa() - idProducto: "+ idProducto);
+		if (idProducto > 0){
+			
+			producto = new ProductoDespensa();
+			producto.setIdDespensa(Var.despensaSelec.getId());
+			producto.setIdProducto(idProducto);
+			producto.setStock(1);
+			producto.setStockMin(0);
+			producto.setCantidadAComprar(1);
+			
+			if (conexion.insertarProductoADespensa(producto))
 				toastMensaje= "Producto en despensa";
 			else
 				toastMensaje = "Error al añadirlo";
-		else
+		} else
 			toastMensaje = "No existe \nproducto";
 	
 		Toast.makeText(ContenidoDespensa.this, toastMensaje,Toast.LENGTH_SHORT).show();
@@ -318,7 +335,7 @@ public class ContenidoDespensa extends Activity {
 
 		Bundle bundle = new Bundle();
 		bundle.putString(Constantes.BARCODE, barCode);
-		bundle.putInt(Constantes.ACCION, Constantes.ACCION_ADD);
+		bundle.putInt(Constantes.ACCION, Constantes.ACCION_ADD_DESPENSA);
 		intent.putExtras(bundle);
 		startActivity(intent);
 

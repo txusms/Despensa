@@ -46,22 +46,4 @@
                 android:paddingRight="15dip"
                 /> 
     </RelativeLayout>
-<!-- 
-<TextView android:text="@string/nombre"
-	android:layout_width="fill_parent"
-	android:layout_height="wrap_content" />
-
-<EditText android:id="@+id/TxtNombre"
-	android:layout_height="wrap_content"
-	android:layout_width="fill_parent" />
-<LinearLayout android:id="@+id/linearLayout1"
-	android:layout_height="wrap_content"	 
-	android:layout_width="fill_parent">
-    <Button android:id="@+id/BtnAñadir" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/hola"></Button>
-    <Button android:id="@+id/BtnEliminar" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/eliminar"></Button>
-    <Button android:id="@+id/BtnProducto" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Producto"></Button>
-</LinearLayout> -->
-	
-
-
 </LinearLayout>

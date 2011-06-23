@@ -179,9 +179,14 @@ public class ListaProductos extends Activity {
 					// TODO Auto-generated method stub
 					// Create an input dialog
 					String msg;
-					Producto producto = listProductos[position];
+					ProductoDespensa producto = new ProductoDespensa();
+					producto.setIdDespensa(Var.despensaSelec.getId());
+					producto.setIdProducto(listProductos[position].getId());
+					producto.setStock(1);
+					producto.setStockMin(0);
+					producto.setCantidadAComprar(1);
 
-					if (conexion.insertarProductoADespensa(producto.getId(), Var.despensaSelec.getId(), 1, 0))
+					if (conexion.insertarProductoADespensa(producto))
 						msg="Producto añadido";
 					else
 						msg="Ya estaba en \nla despensa";

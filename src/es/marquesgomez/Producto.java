@@ -8,6 +8,8 @@ public class Producto {
 	private String notas;
 	private int idCategoria;
 	private String categoria;
+	private int aGranell;
+	private int multiplicador;
 
 	public Producto(){
 		
@@ -65,6 +67,28 @@ public class Producto {
 		this.categoria = categoria;
 	}
 	
+	public boolean getaGranell() {
+		if (aGranell>0)
+			return true;
+		else
+			return false;
+	}
+
+	public void setaGranell(boolean aGranell) {
+		if (aGranell)
+			this.aGranell = 1;
+		else
+			this.aGranell = 0;
+	}
+
+	public int getMultiplicador() {
+		return multiplicador;
+	}
+
+	public void setMultiplicador(int multiplicador) {
+		this.multiplicador = multiplicador;
+	}
+
 	public String toString(){
 		return this.getNombre();
 	}

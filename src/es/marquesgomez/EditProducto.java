@@ -29,6 +29,9 @@ public class EditProducto extends Activity {
 	private ImageView imgScan;
 	private EditText txtCantidad;
 	private EditText txtCantidadMinima;
+	private EditText txtCantidadAComprar;
+	private ProductoDespensa productoEdit;
+	private int accion;
 
 	
 	@Override
@@ -51,6 +54,7 @@ public class EditProducto extends Activity {
         imgScan = (ImageView)findViewById(R.id.imgScanP);
         txtCantidad = (EditText)findViewById(R.id.txtCantidad);
         txtCantidadMinima = (EditText)findViewById(R.id.txtCantidadMinima);
+        txtCantidadAComprar = (EditText)findViewById(R.id.txtCantidadAComprar);
         
         cmbCategorias = (Spinner)findViewById(R.id.CmbCategorias);
         
@@ -63,12 +67,29 @@ public class EditProducto extends Activity {
 
         
         Bundle bundle = getIntent().getExtras();
-                      
-        switch (bundle.getInt(Constantes.ACCION)){
-        case (Constantes.ACCION_ADD):
-        	Log.d(Constantes.LOG_TAG, "onCreate() - ACCION ADD");
+        accion = bundle.getInt(Constantes.ACCION);
+        
+        switch (accion){
+        case (Constantes.ACCION_ADD_DESPENSA):
+        	Log.d(Constantes.LOG_TAG, "onCreate() - ACCION ADD DESDE DESPENSA");
         	txtBarCode.setText(bundle.getString(Constantes.BARCODE));
         	lytStock.setVisibility(View.INVISIBLE);
+        	break;
+        case (Constantes.ACCION_EDIT_DESPENSA):
+        	Log.d(Constantes.LOG_TAG, "onCreate() - ACCION EDIT DESDE DESPENSA");
+        	long idProducto =  bundle.getLong(Constantes.ID_PRODUCTO_EDIT);
+        	
+        	productoEdit = conexion.getProductoDespensa(idProducto);
+        	
+        	txtNombre.setText(productoEdit.getNombre());
+        	txtBarCode.setText(productoEdit.getCodigoBarras());
+        	txtCantidad.setText(String.valueOf(productoEdit.getStock()));
+        	txtCantidadMinima.setText(String.valueOf(productoEdit.getStockMin()));
+        	txtCantidadAComprar.setText(String.valueOf(productoEdit.getCantidadAComprar()));
+        	chbAñadirEnDespensa.setChecked(true);
+        	findViewById(R.id.chbAñadirEnDespensa).setEnabled(false);
+        	chbAñadirEnDespensa.setText("Producto en despensa");
+        	lytStock.setVisibility(View.VISIBLE);
         	break;
         default:
         		lytStock.setVisibility(View.VISIBLE);
@@ -96,7 +117,17 @@ public class EditProducto extends Activity {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				if (comprobarCampos()){
-					guardarProducto();
+					switch (accion){
+			        case (Constantes.ACCION_ADD_DESPENSA):
+			        	Log.d(Constantes.LOG_TAG, "EditProducto.java - Click guardar - ACCION ADD DESDE DESPENSA");
+			        	guardarProductoNuevo();
+			        	break;
+			        case (Constantes.ACCION_EDIT_DESPENSA):
+			        	Log.d(Constantes.LOG_TAG, "EditProducto.java - Click guardar - ACCION EDIT DESDE DESPENSA");
+			        	guardarProductoEditado();
+			        	break;
+					}
+					
 				}
 				
 			}
@@ -123,19 +154,22 @@ public class EditProducto extends Activity {
 			}
 		});
         
-        txtBarCode.setOnLongClickListener(new View.OnLongClickListener() {
-			
-			@Override
-			public boolean onLongClick(View v) {
-				// TODO Auto-generated method stub
-				scanCode();
-				return true;
-			}
-		});
+//        txtBarCode.setOnLongClickListener(new View.OnLongClickListener() {
+//			
+//			@Override
+//			public boolean onLongClick(View v) {
+//				// TODO Auto-generated method stub
+//				scanCode();
+//				return true;
+//			}
+//		});
               
 	}
 	
 	
+
+
+
 	//EVITAR QUE NUESTRA ACTIVIDAD COMIENCE DE NUEVO AL ROTAR LA PANTALLA
 	@Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -157,7 +191,7 @@ public class EditProducto extends Activity {
 	}
 
 
-	protected void guardarProducto() {
+	protected void guardarProductoNuevo() {
 		// TODO Auto-generated method stub
 		Log.d(Constantes.LOG_TAG, "guardarProducto()");
 		final Producto nuevoProducto = new Producto();
@@ -184,9 +218,18 @@ public class EditProducto extends Activity {
 		
 		if (idProducto>0){
 			if (chbAñadirEnDespensa.isChecked()){
-				int stock = Integer.parseInt(txtCantidad.getText().toString());
-				int stockMin = Integer.parseInt(txtCantidadMinima.getText().toString());
-				conexion.insertarProductoADespensa(idProducto, Var.despensaSelec.getId(), stock, stockMin);
+				
+				productoEdit.setIdDespensa(Var.despensaSelec.getId());
+				productoEdit.setIdProducto(idProducto);
+				productoEdit.setStock(Integer.parseInt(txtCantidad.getText().toString()));
+				productoEdit.setStockMin(Integer.parseInt(txtCantidadMinima.getText().toString()));
+				productoEdit.setCantidadAComprar(Integer.parseInt(txtCantidadAComprar.getText().toString()));
+				
+//				int stock = Integer.parseInt(txtCantidad.getText().toString());
+//				int stockMin = Integer.parseInt(txtCantidadMinima.getText().toString());
+//				int cantidadAComprar = Integer.parseInt(txtCantidadAComprar.getText().toString());
+//				conexion.insertarProductoADespensa(idProducto, Var.despensaSelec.getId(), stock, stockMin, cantidadAComprar);
+				conexion.insertarProductoADespensa(productoEdit);
 			}
 			Log.d(Constantes.LOG_TAG, "guardarProducto() - OK");
 			Toast.makeText(EditProducto.this,"Producto introducido",Toast.LENGTH_SHORT).show();
@@ -197,6 +240,57 @@ public class EditProducto extends Activity {
 		}
 		
 		
+	}
+	
+	protected void guardarProductoEditado() {
+		// TODO Auto-generated method stub
+		Log.d(Constantes.LOG_TAG, "guardarProductoEditado()");
+		final Producto productoPEdit = new Producto();
+		
+		productoEdit.setNombre(txtNombre.getText().toString().trim());
+		productoEdit.setCodigoBarras(txtBarCode.getText().toString().trim());
+		productoEdit.setStock(Integer.parseInt(txtCantidad.getText().toString()));
+		productoEdit.setStockMin(Integer.parseInt(txtCantidadMinima.getText().toString()));
+		productoEdit.setCantidadAComprar(Integer.parseInt(txtCantidadAComprar.getText().toString()));
+//		productoEdit.setNotas(txtNotas.getText().toString().trim());
+//		nuevoProducto.setIdCategoria(0);
+		productoPEdit.setId(productoEdit.getIdProducto());
+		productoPEdit.setNombre(productoEdit.getNombre());
+		if (productoEdit.getCodigoBarras().length()>0)
+			productoPEdit.setCodigoBarras(productoEdit.getCodigoBarras());
+		else 
+			productoPEdit.setCodigoBarras(null);
+		
+		
+//		cmbCategorias.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//			public void onItemSelected(AdapterView<?> parent, android.view.View v, int position, long id) {
+//				Log.i(Constantes.LOG_TAG,"Categoria seleccionada: "+parent.getItemAtPosition(position)+" "+(Integer) parent.getItemAtPosition(position));
+//				nuevoProducto.setIdCategoria((Integer) parent.getItemAtPosition(position));
+//			}
+//			@Override
+//            public void onNothingSelected(AdapterView<?> arg0) {
+//                // TODO Auto-generated method stub
+//                nuevoProducto.setIdCategoria(cmbCategorias.getChildCount());
+//            } 
+//		});
+		
+//		long idProducto = conexion.insertarProducto(productoEdit);
+		String msg;
+		if (conexion.updateProducto(productoPEdit)){
+			if (conexion.updateProductoDespensa(productoEdit)){
+//				int stock = Integer.parseInt(txtCantidad.getText().toString());
+//				int stockMin = Integer.parseInt(txtCantidadMinima.getText().toString());
+//				conexion.insertarProductoADespensa(idProducto, Var.despensaSelec.getId(), stock, stockMin);
+			}
+			Log.d(Constantes.LOG_TAG, "guardarProductoEditado() - OK");
+			msg="Producto \nactualizado";
+			
+		} else {
+			Log.d(Constantes.LOG_TAG, "guardarProductoEditado() - NO OK");
+			msg="Producto no \nactualizado";
+		}
+		
+		Toast.makeText(EditProducto.this,msg,Toast.LENGTH_SHORT).show();
 	}
 	
 	/**

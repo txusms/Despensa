@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -20,7 +21,7 @@ import android.widget.Toast;
 public class ListaCompra extends Activity {
 	
 	private BaseDeDatos conexion;
-	private ProductoCompra[] listProductosCompra;
+	private ProductoDespensa[] listProductosCompra;
 	private ListView lstProductosCompra;
 	
 	@Override
@@ -31,13 +32,62 @@ public class ListaCompra extends Activity {
 		
 		this.conexion = Var.conexion;
 		
+		Button btnFinalizarCompra = (Button)findViewById(R.id.BtnFinCompra);
+		
 		listarProductosCompra();
+		
+		btnFinalizarCompra.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				AlertDialog.Builder alert = new AlertDialog.Builder(ListaCompra.this);
+				
+				alert.setTitle("Finalizar la compra");
+				alert.setMessage("Desea eliminar los productos no comprados?");
+				
+				alert.setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                    	finCompra();
+                    	conexion.eliminarProductosCompra();
+                    	listarProductosCompra();
+                    }
+                });
+
+                alert.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                    	finCompra();
+                    	listarProductosCompra();
+                    }
+                });
+
+                alert.show();
+//				if (conexion.finalizarCompra(Var.despensaSelec.getId())){
+//					Toast.makeText(ListaCompra.this,"Fin OK",Toast.LENGTH_LONG).show();
+//					listarProductosCompra();
+//				}
+//				else
+//					Toast.makeText(ListaCompra.this,"Fin ERROR",Toast.LENGTH_LONG).show();
+				
+			}
+		});
 	}
 	
 	// EVITAR QUE NUESTRA ACTIVIDAD COMIENCE DE NUEVO AL ROTAR LA PANTALLA
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {
 		super.onConfigurationChanged(newConfig);
+	}
+	
+	public void finCompra(){
+		
+		if (conexion.finalizarCompra(Var.despensaSelec.getId())){
+			Toast.makeText(ListaCompra.this,"Fin OK",Toast.LENGTH_LONG).show();
+			
+		}
+		else
+			Toast.makeText(ListaCompra.this,"Fin ERROR",Toast.LENGTH_LONG).show();
+		
 	}
 	
 	public void listarProductosCompra() {
@@ -47,6 +97,7 @@ public class ListaCompra extends Activity {
 		AdaptadorProductosCompra adaptador;
 		lstProductosCompra = (ListView) findViewById(R.id.LstProductosCompra);
 		TextView txtBackground = (TextView)findViewById(R.id.lista_compraTextBackground);
+		
 		
 		Log.d(Constantes.LOG_TAG,"listarProductosCompra() - Antes del if null");
 
@@ -66,22 +117,15 @@ public class ListaCompra extends Activity {
 						@Override
 						public void onItemClick(AdapterView<?> a, View v,
 								int position, long id) {
-							// Acciones necesarias al hacer click
-							// Intent intent = new Intent(HolaUsuario.this,
-							// FrmMensaje.class);
-							//
-							// Bundle bundle = new Bundle();
-							// bundle.putString("NOMBRE", datos[position]);
-							// intent.putExtras(bundle);
-							// startActivity(intent);
 							Toast.makeText(ListaCompra.this,
 									"Producto: "+listProductosCompra[position].getNombre(),
 									Toast.LENGTH_LONG).show();
+							a.updateViewLayout(v, null);
 
 						}
 					});
 		} else {
-			Log.d(Constantes.LOG_TAG,"listarProductos() - No existen productos en despensa");
+			Log.d(Constantes.LOG_TAG,"listarProductosCompra() - No existen productos en despensa");
 			adaptador = new AdaptadorProductosCompra(this);
 			lstProductosCompra.setVisibility(View.INVISIBLE);
 			txtBackground.setVisibility(ListView.VISIBLE);
@@ -107,19 +151,24 @@ public class ListaCompra extends Activity {
 			LayoutInflater inflater = context.getLayoutInflater();
 			View item = inflater.inflate(R.layout.listitem_compra, null);
 			
-//			final long idProducto = listProductosCompra[position].getIdProducto();
+			final long idProducto = listProductosCompra[position].getIdProducto();
 			
 			TextView lblNombreP = (TextView) item.findViewById(R.id.LblItemCompraNombre);
 			lblNombreP.setText(listProductosCompra[position].getNombre());
+			Log.i(Constantes.LOG_TAG,"antes del if - formato producto comprado "+listProductosCompra[position].getComprado());
+			if (listProductosCompra[position].getComprado()>0){
+				lblNombreP.setTextColor(Color.RED);
+				Log.i(Constantes.LOG_TAG,"formato producto comprado "+listProductosCompra[position].getComprado());
+			}
 			TextView lblCantidadP = (TextView) item.findViewById(R.id.LblItemCompraCantidad);
 			ImageView imgSuma = (ImageView)item.findViewById(R.id.ImgItemCompraSuma);
 			ImageView imgResta = (ImageView)item.findViewById(R.id.ImgItemCompraResta);
 			ImageView imgEliminar = (ImageView)item.findViewById(R.id.ImgItemCompraEliminar);
 			
-			int stock = listProductosCompra[position].getStock();
-			lblCantidadP.setText(Integer.toString(stock));
-			if (listProductosCompra[position].getStock() <= listProductosCompra[position].getStockMin())
-				lblCantidadP.setTextColor(Color.RED);
+			int cantidad = listProductosCompra[position].getCantidadComprada();
+			lblCantidadP.setText(Integer.toString(cantidad));
+//			if (listProductosCompra[position].get() <= listProductosCompra[position].getStockMin())
+//				lblCantidadP.setTextColor(Color.RED);
 						
 			//Evento al hacer click a un item
 			item.setOnClickListener(new View.OnClickListener() {
@@ -127,9 +176,16 @@ public class ListaCompra extends Activity {
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
-					Toast.makeText(ListaCompra.this,
-							"Producto: "+listProductosCompra[position].getNombre(),
-							Toast.LENGTH_LONG).show();
+					if (listProductosCompra[position].getComprado()==1)
+						listProductosCompra[position].setComprado(0);
+					else
+						listProductosCompra[position].setComprado(1);
+					
+					if (conexion.productoComprado(listProductosCompra[position])){
+						Toast.makeText(ListaCompra.this,"Producto marcado",Toast.LENGTH_LONG).show();
+						listarProductosCompra();
+					}
+					
 				}
 			});
 			
@@ -137,8 +193,8 @@ public class ListaCompra extends Activity {
 				
 				@Override
 				public boolean onLongClick(View v) {
-					// TODO Auto-generated method stub
-					//Implementar alertDialog para editar el producto.
+					// TODO Implementar alertDialog para editar el producto.
+					
 					registerForContextMenu(lstProductosCompra);
 					return false;
 				}
@@ -149,7 +205,7 @@ public class ListaCompra extends Activity {
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
-//					conexion.actualizarStockXidProducto(idProducto, Var.despensaSelec.getId(), 1);
+					conexion.actualizarCantidadCompradaXidProducto(idProducto, Var.despensaSelec.getId(), 1);
 					listarProductosCompra();
 				}
 			});
@@ -159,7 +215,7 @@ public class ListaCompra extends Activity {
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
-//					conexion.actualizarStockXidProducto(idProducto, Var.despensaSelec.getId(), -1);
+					conexion.actualizarCantidadCompradaXidProducto(idProducto, Var.despensaSelec.getId(), -1);
 					listarProductosCompra();
 				}
 			});
@@ -177,7 +233,7 @@ public class ListaCompra extends Activity {
 					alert.setPositiveButton(R.string.aceptar, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
 
-                        	ProductoCompra itemToEdit = listProductosCompra[position];
+                        	ProductoDespensa itemToEdit = listProductosCompra[position];
                             if (conexion.eliminarProductoCompra(itemToEdit))
                             	listarProductosCompra();
                         }
