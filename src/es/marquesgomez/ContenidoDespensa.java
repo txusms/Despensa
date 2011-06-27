@@ -62,7 +62,6 @@ public class ContenidoDespensa extends Activity {
 
 		btnProductos.setOnClickListener(new View.OnClickListener() {
 
-			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 
@@ -74,7 +73,6 @@ public class ContenidoDespensa extends Activity {
 		
 		btnListaCompra.setOnClickListener(new View.OnClickListener() {
 
-			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 
@@ -87,7 +85,6 @@ public class ContenidoDespensa extends Activity {
 		
 		btnNuevoProducto.setOnClickListener(new View.OnClickListener() {
 
-			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				añadirProducto("");
@@ -432,7 +429,6 @@ public class ContenidoDespensa extends Activity {
 
 			lstProductosDespensa
 					.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-						@Override
 						public void onItemClick(AdapterView<?> a, View v,
 								int position, long id) {
 							// Acciones necesarias al hacer click
@@ -496,7 +492,6 @@ public class ContenidoDespensa extends Activity {
 			//Evento al hacer click a un item
 			item.setOnClickListener(new View.OnClickListener() {
 				
-				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
 //					Toast.makeText(ContenidoDespensa.this,
@@ -507,7 +502,6 @@ public class ContenidoDespensa extends Activity {
 			
 			item.setOnLongClickListener(new View.OnLongClickListener() {
 				
-				@Override
 				public boolean onLongClick(View v) {
 					// TODO Auto-generated method stub
 					//Implementar alertDialog para editar el producto.
@@ -518,7 +512,6 @@ public class ContenidoDespensa extends Activity {
 			
 			imgSuma.setOnClickListener(new View.OnClickListener() {
 				
-				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
 					conexion.actualizarStockXidProducto(idProducto, Var.despensaSelec.getId(), 1);
@@ -528,7 +521,6 @@ public class ContenidoDespensa extends Activity {
 			
 			imgResta.setOnClickListener(new View.OnClickListener() {
 				
-				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
 					conexion.actualizarStockXidProducto(idProducto, Var.despensaSelec.getId(), -1);
@@ -538,7 +530,6 @@ public class ContenidoDespensa extends Activity {
 			
 			imgEliminar.setOnClickListener(new View.OnClickListener() {
 				
-				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
 					AlertDialog.Builder alert = new AlertDialog.Builder(context);

@@ -140,7 +140,6 @@ public class ListaDespensas extends Activity {
         	txtBackground.setVisibility(ListView.GONE);
         	
 	        lstOpciones.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-	        	@Override
 	        	public void onItemClick(AdapterView<?> a, View v, int position, long id) {
 	        		//Acciones necesarias al hacer click
 	        		Intent intent = new Intent(ListaDespensas.this, ContenidoDespensa.class);
@@ -205,7 +204,6 @@ public class ListaDespensas extends Activity {
 			
 			imgEditar.setOnClickListener(new View.OnClickListener() {
 				
-				@Override
 				public void onClick(View v) {
 					// TODO: Implementar la edicion de la despensa
 					//AlertDialog para editar una nueva despensa 
@@ -261,7 +259,6 @@ public class ListaDespensas extends Activity {
 			});
 			imgEliminar.setOnClickListener(new View.OnClickListener() {
 				
-				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
 					AlertDialog.Builder alert = new AlertDialog.Builder(context);

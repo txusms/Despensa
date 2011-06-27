@@ -113,7 +113,6 @@ public class EditProducto extends Activity {
         
         btnGuardar.setOnClickListener(new OnClickListener() {
 			
-			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				if (comprobarCampos()){
@@ -135,7 +134,6 @@ public class EditProducto extends Activity {
         
         btnCancelar.setOnClickListener(new OnClickListener() {
 			
-			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				//guardarProducto();
@@ -147,7 +145,6 @@ public class EditProducto extends Activity {
         
         imgScan.setOnClickListener(new OnClickListener() {
 			
-			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				scanCode();

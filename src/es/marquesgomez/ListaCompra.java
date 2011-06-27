@@ -38,7 +38,6 @@ public class ListaCompra extends Activity {
 		
 		btnFinalizarCompra.setOnClickListener(new View.OnClickListener() {
 			
-			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				AlertDialog.Builder alert = new AlertDialog.Builder(ListaCompra.this);
@@ -114,7 +113,6 @@ public class ListaCompra extends Activity {
 
 			lstProductosCompra
 					.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-						@Override
 						public void onItemClick(AdapterView<?> a, View v,
 								int position, long id) {
 							Toast.makeText(ListaCompra.this,
@@ -173,7 +171,6 @@ public class ListaCompra extends Activity {
 			//Evento al hacer click a un item
 			item.setOnClickListener(new View.OnClickListener() {
 				
-				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
 					if (listProductosCompra[position].getComprado()==1)
@@ -191,7 +188,6 @@ public class ListaCompra extends Activity {
 			
 			item.setOnLongClickListener(new View.OnLongClickListener() {
 				
-				@Override
 				public boolean onLongClick(View v) {
 					// TODO Implementar alertDialog para editar el producto.
 					
@@ -202,7 +198,6 @@ public class ListaCompra extends Activity {
 			
 			imgSuma.setOnClickListener(new View.OnClickListener() {
 				
-				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
 					conexion.actualizarCantidadCompradaXidProducto(idProducto, Var.despensaSelec.getId(), 1);
@@ -212,7 +207,6 @@ public class ListaCompra extends Activity {
 			
 			imgResta.setOnClickListener(new View.OnClickListener() {
 				
-				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
 					conexion.actualizarCantidadCompradaXidProducto(idProducto, Var.despensaSelec.getId(), -1);
@@ -222,7 +216,6 @@ public class ListaCompra extends Activity {
 			
 			imgEliminar.setOnClickListener(new View.OnClickListener() {
 				
-				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
 					AlertDialog.Builder alert = new AlertDialog.Builder(context);

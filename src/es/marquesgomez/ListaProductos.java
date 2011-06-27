@@ -62,7 +62,6 @@ public class ListaProductos extends Activity {
 
 			lstProductos
 					.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-						@Override
 						public void onItemClick(AdapterView<?> a, View v,
 								int position, long id) {
 							// Acciones necesarias al hacer click
@@ -120,7 +119,6 @@ public class ListaProductos extends Activity {
 			//Evento al hacer click a un item
 			item.setOnClickListener(new View.OnClickListener() {
 				
-				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
 					Toast.makeText(ListaProductos.this,
@@ -131,7 +129,6 @@ public class ListaProductos extends Activity {
 			
 			item.setOnLongClickListener(new View.OnLongClickListener() {
 				
-				@Override
 				public boolean onLongClick(View v) {
 					// TODO Auto-generated method stub
 					//Implementar alertDialog para editar el producto.
@@ -174,7 +171,6 @@ public class ListaProductos extends Activity {
 			
 			imgAñadir.setOnClickListener(new View.OnClickListener() {
 				
-				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
 					// Create an input dialog
@@ -197,7 +193,6 @@ public class ListaProductos extends Activity {
 			
 			imgEliminar.setOnClickListener(new View.OnClickListener() {
 				
-				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
 					// Create an input dialog
