@@ -8,11 +8,11 @@
    		<item android:id="@+id/OpcEditar" android:title="Editar"></item>
     	<item android:id="@+id/OpcEliminar" android:title="Eliminar"></item>
     </group>
-    <group android:id="@+id/OpcGrpAñadirAP">
-    	<item android:id="@+id/OpcAñadirAP" android:title="Añadir a Productos"></item>
+    <group android:id="@+id/OpcGrpAddAP">
+    	<item android:id="@+id/OpcAddAP" android:title="Añadir a Productos"></item>
     </group>
-    <group android:id="@+id/OpcGrpAñadirAD">
-    	<item android:id="@+id/OpcAñadirAD" android:title="Añadir a Despensa"></item>
+    <group android:id="@+id/OpcGrpAddAD">
+    	<item android:id="@+id/OpcAddAD" android:title="Añadir a Despensa"></item>
     </group>
     <group android:id="@+id/OpcGrpPrincipal">
         <item android:id="@+id/OpcScan" android:title="Scan Code"></item>

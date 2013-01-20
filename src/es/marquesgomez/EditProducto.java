@@ -22,7 +22,7 @@ public class EditProducto extends Activity {
 	private BaseDeDatos conexion;
 	private View lytStock;
 	private EditText txtBarCode;
-	private CheckBox chbAñadirEnDespensa;
+	private CheckBox chbAddEnDespensa;
 	private Spinner cmbCategorias;
 	private EditText txtNombre;
 	private EditText txtNotas;
@@ -50,7 +50,7 @@ public class EditProducto extends Activity {
         txtBarCode = (EditText)findViewById(R.id.txtBarCode);
         txtNombre= (EditText)findViewById(R.id.txtNombreP);
         txtNotas= (EditText)findViewById(R.id.txtNotas);
-        chbAñadirEnDespensa = (CheckBox)findViewById(R.id.chbAñadirEnDespensa); 
+        chbAddEnDespensa = (CheckBox)findViewById(R.id.chbAddEnDespensa); 
         imgScan = (ImageView)findViewById(R.id.imgScanP);
         txtCantidad = (EditText)findViewById(R.id.txtCantidad);
         txtCantidadMinima = (EditText)findViewById(R.id.txtCantidadMinima);
@@ -86,16 +86,16 @@ public class EditProducto extends Activity {
         	txtCantidad.setText(String.valueOf(productoEdit.getStock()));
         	txtCantidadMinima.setText(String.valueOf(productoEdit.getStockMin()));
         	txtCantidadAComprar.setText(String.valueOf(productoEdit.getCantidadAComprar()));
-        	chbAñadirEnDespensa.setChecked(true);
-        	findViewById(R.id.chbAñadirEnDespensa).setEnabled(false);
-        	chbAñadirEnDespensa.setText("Producto en despensa");
+        	chbAddEnDespensa.setChecked(true);
+        	findViewById(R.id.chbAddEnDespensa).setEnabled(false);
+        	chbAddEnDespensa.setText("Producto en despensa");
         	lytStock.setVisibility(View.VISIBLE);
         	break;
         default:
         		lytStock.setVisibility(View.VISIBLE);
         }
         
-        chbAñadirEnDespensa.setOnCheckedChangeListener(
+        chbAddEnDespensa.setOnCheckedChangeListener(
     			new CheckBox.OnCheckedChangeListener() {
     				
 	    			public void onCheckedChanged(CompoundButton buttonView,
@@ -214,7 +214,7 @@ public class EditProducto extends Activity {
 		long idProducto = conexion.insertarProducto(nuevoProducto);
 		
 		if (idProducto>0){
-			if (chbAñadirEnDespensa.isChecked()){
+			if (chbAddEnDespensa.isChecked()){
 				
 				productoEdit.setIdDespensa(Var.despensaSelec.getId());
 				productoEdit.setIdProducto(idProducto);

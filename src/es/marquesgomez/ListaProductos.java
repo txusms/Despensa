@@ -113,7 +113,7 @@ public class ListaProductos extends Activity {
 			lblNombreP.setText(listProductos[position].getNombre());
 			TextView lblCodigoBarras = (TextView) item.findViewById(R.id.LblItemProductoCodigoBarras);
 			lblCodigoBarras.setText(listProductos[position].getCodigoBarras());
-			ImageView imgAñadir = (ImageView)item.findViewById(R.id.ImgItemProductoAñadirADespensa);
+			ImageView imgAdd = (ImageView)item.findViewById(R.id.ImgItemProductoAddADespensa);
 			ImageView imgEliminar = (ImageView)item.findViewById(R.id.ImgItemProductoEliminar);
 						
 			//Evento al hacer click a un item
@@ -169,7 +169,7 @@ public class ListaProductos extends Activity {
 				}
 			});
 			
-			imgAñadir.setOnClickListener(new View.OnClickListener() {
+			imgAdd.setOnClickListener(new View.OnClickListener() {
 				
 				public void onClick(View v) {
 					// TODO Auto-generated method stub

@@ -37,7 +37,7 @@
 				<EditText android:text="1" android:layout_height="wrap_content" android:layout_width="60px" android:inputType="number" android:id="@+id/txtMultiplicador"></EditText>
 				<CheckBox android:id="@+id/chbAGranell" android:text="A Granell" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_gravity="right"></CheckBox>
 			</LinearLayout>
-			<CheckBox android:text="Añadir en despensa" android:id="@+id/chbAñadirEnDespensa"
+			<CheckBox android:text="Añadir en despensa" android:id="@+id/chbAddEnDespensa"
 				android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1"></CheckBox>
 			<LinearLayout android:orientation="vertical"
 				android:layout_height="wrap_content" android:id="@+id/LytStock"

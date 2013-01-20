@@ -4,6 +4,6 @@
     <item android:id="@+id/CtxProductoSumar1" android:title="Suma 1"></item>
     <item android:id="@+id/CtxProductoResta1" android:title="Resta 1"></item>
     <item android:id="@+id/CtxProductoEditar" android:title="Editar"></item>
-    <item android:id="@+id/CtxProductoAñadirACompra" android:title="Añadir a Compra"></item>
+    <item android:id="@+id/CtxProductoAddACompra" android:title="Añadir a Compra"></item>
     
 </menu>

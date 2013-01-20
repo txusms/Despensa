@@ -230,7 +230,7 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 	 * @param desp
 	 * @return resultado
 	 */
-	public long añadirDespensa(String desp) {
+	public long addDespensa(String desp) {
 		Log.d(Constantes.LOG_TAG, "añadirDespensas() - Despensa: " + desp);
 
 		long result = 0;
@@ -1163,7 +1163,7 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 		// TODO Auto-generated method stub
 		boolean result = false;
 
-		long idDespensa = añadirDespensa(despensaNueva.getNombre());
+		long idDespensa = addDespensa(despensaNueva.getNombre());
 		Log.d(Constantes.LOG_TAG, "duplicarDespensa() - idDespensa: "
 				+ idDespensa);
 		if (idDespensa > 0) {

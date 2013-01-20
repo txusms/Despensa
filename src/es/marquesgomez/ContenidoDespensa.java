@@ -87,7 +87,7 @@ public class ContenidoDespensa extends Activity {
 
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				añadirProducto("");
+				addProducto("");
 			}
 		});
 		
@@ -191,7 +191,7 @@ public class ContenidoDespensa extends Activity {
 			// listarProductosDespensa(conexion);
 			// lblMensaje.setText("Etiqueta: Opcion 1 pulsada!");
 			return true;
-		case R.id.CtxProductoAñadirACompra:
+		case R.id.CtxProductoAddACompra:
 			insertarProductoACompra(listProductosDespensa[info.position]);
 			return true;
 		default:
@@ -225,8 +225,8 @@ public class ContenidoDespensa extends Activity {
 
 			menu.setGroupVisible(R.id.OpcGrpPrincipal, true);
 			menu.setGroupVisible(R.id.OpcGrpProducto, false);
-			menu.setGroupVisible(R.id.OpcGrpAñadirAD, false);
-			menu.setGroupVisible(R.id.OpcGrpAñadirAP, false);
+			menu.setGroupVisible(R.id.OpcGrpAddAD, false);
+			menu.setGroupVisible(R.id.OpcGrpAddAP, false);
 
 			teclaMenu = false;
 		} else {
@@ -236,18 +236,18 @@ public class ContenidoDespensa extends Activity {
 			switch (resultEstadoCodBarras) {
 			case Constantes.ESTADO_BARCODE_DESPENSA:
 				menu.setGroupVisible(R.id.OpcGrpProducto, true);
-				menu.setGroupVisible(R.id.OpcGrpAñadirAD, false);
-				menu.setGroupVisible(R.id.OpcGrpAñadirAP, false);
+				menu.setGroupVisible(R.id.OpcGrpAddAD, false);
+				menu.setGroupVisible(R.id.OpcGrpAddAP, false);
 				break;
 			case Constantes.ESTADO_BARCODE_PRODUCTOS:
 				menu.setGroupVisible(R.id.OpcGrpProducto, false);
-				menu.setGroupVisible(R.id.OpcGrpAñadirAD, true);
-				menu.setGroupVisible(R.id.OpcGrpAñadirAP, false);
+				menu.setGroupVisible(R.id.OpcGrpAddAD, true);
+				menu.setGroupVisible(R.id.OpcGrpAddAP, false);
 				break;
 			case Constantes.ESTADO_BARCODE_NO_EXISTE:
 				menu.setGroupVisible(R.id.OpcGrpProducto, false);
-				menu.setGroupVisible(R.id.OpcGrpAñadirAD, false);
-				menu.setGroupVisible(R.id.OpcGrpAñadirAP, true);
+				menu.setGroupVisible(R.id.OpcGrpAddAD, false);
+				menu.setGroupVisible(R.id.OpcGrpAddAP, true);
 				break;
 			default:
 				break;
@@ -278,12 +278,12 @@ public class ContenidoDespensa extends Activity {
 		case R.id.OpcEditar:
 			// lblMensaje.setText("Etiqueta: Opcion 1 pulsada!");
 			return true;
-		case R.id.OpcAñadirAD:
-			añadirProductoADespensa(this.barCodeFinal);
+		case R.id.OpcAddAD:
+			addProductoADespensa(this.barCodeFinal);
 			// lblMensaje.setText("Etiqueta: Opcion 1 pulsada!");
 			return true;
-		case R.id.OpcAñadirAP:
-			añadirProducto(this.barCodeFinal);
+		case R.id.OpcAddAP:
+			addProducto(this.barCodeFinal);
 			// lblMensaje.setText("Etiqueta: Opcion 1 pulsada!");
 			return true;
 		case R.id.OpcScan:
@@ -297,7 +297,7 @@ public class ContenidoDespensa extends Activity {
 		}
 	}
 
-	private void añadirProductoADespensa(String barCode) {
+	private void addProductoADespensa(String barCode) {
 		// TODO Auto-generated method stub
 		Log.d(Constantes.LOG_TAG, "añadirProductoADespensa() - barCode: "
 				+ barCode);
@@ -325,7 +325,7 @@ public class ContenidoDespensa extends Activity {
 		Toast.makeText(ContenidoDespensa.this, toastMensaje,Toast.LENGTH_SHORT).show();
 	}
 
-	private void añadirProducto(String barCode) {
+	private void addProducto(String barCode) {
 		Log.d(Constantes.LOG_TAG, "añadirProducto() - barCode: " + barCode);
 		// TODO Auto-generated method stub
 		Intent intent = new Intent(ContenidoDespensa.this, EditProducto.class);

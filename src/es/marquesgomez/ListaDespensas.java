@@ -46,11 +46,11 @@ public class ListaDespensas extends Activity {
         
         listarDespensas();
         
-        final Button btmAñadir = (Button)findViewById(R.id.BtnAñadir);
+        final Button btmAdd = (Button)findViewById(R.id.BtnAdd);
         
-        btmAñadir.setOnClickListener(new View.OnClickListener(){
+        btmAdd.setOnClickListener(new View.OnClickListener(){
         	public void onClick(View arg0){
-        		añadirDespensa();
+        		addDespensa();
         	}
         });
         
@@ -159,18 +159,18 @@ public class ListaDespensas extends Activity {
         lstOpciones.setAdapter(adaptador);
     } //Final listarDespensas
     
-    private void añadirDespensa(){
+    private void addDespensa(){
     	//AlertDialog para insertar una nueva despensa 
         final EditText input = new EditText(this);
         input.setSingleLine(true);
-        input.setHint(R.string.hint_añadir);
+        input.setHint(R.string.hint_add);
 
     	new AlertDialog.Builder(ListaDespensas.this)
-         .setTitle(R.string.tittle_añadir)
-         .setPositiveButton(R.string.añadir,
+         .setTitle(R.string.tittle_add)
+         .setPositiveButton(R.string.add,
           new DialogInterface.OnClickListener() {
           public void onClick(DialogInterface dialog, int which) {
-        	  if (conexion.añadirDespensa(input.getText().toString().trim())>0){
+        	  if (conexion.addDespensa(input.getText().toString().trim())>0){
         		  Toast.makeText(ListaDespensas.this, "Despensa añadida", Toast.LENGTH_SHORT).show();
         		  listarDespensas();
         	  } else {
@@ -300,7 +300,7 @@ public class ListaDespensas extends Activity {
 
     	new AlertDialog.Builder(ListaDespensas.this)
          .setTitle("Duplicar despensa")
-         .setPositiveButton(R.string.añadir,
+         .setPositiveButton(R.string.add,
           new DialogInterface.OnClickListener() {
           public void onClick(DialogInterface dialog, int which) {
         	  
