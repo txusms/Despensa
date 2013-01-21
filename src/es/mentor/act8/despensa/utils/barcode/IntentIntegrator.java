@@ -1,4 +1,4 @@
-package es.marquesgomez;
+package es.mentor.act8.despensa.utils.barcode;
 
 /*
  * Copyright 2009 ZXing authors
@@ -20,6 +20,8 @@ package es.marquesgomez;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
+import es.mentor.act8.despensa.Constantes;
 
 
 

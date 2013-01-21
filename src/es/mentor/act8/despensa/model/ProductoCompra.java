@@ -1,4 +1,5 @@
-package es.marquesgomez;
+package es.mentor.act8.despensa.model;
+
 
 public class ProductoCompra extends ProductoDespensa{
 	

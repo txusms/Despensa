@@ -1,5 +1,11 @@
-package es.marquesgomez;
+package es.mentor.act8.despensa.ui;
 
+import es.marquesgomez.R;
+import es.mentor.act8.despensa.Constantes;
+import es.mentor.act8.despensa.Var;
+import es.mentor.act8.despensa.database.BaseDeDatos;
+import es.mentor.act8.despensa.model.Producto;
+import es.mentor.act8.despensa.model.ProductoDespensa;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;

@@ -1,5 +1,11 @@
-package es.marquesgomez;
+package es.mentor.act8.despensa.database;
 
+import es.mentor.act8.despensa.Constantes;
+import es.mentor.act8.despensa.Var;
+import es.mentor.act8.despensa.model.Categoria;
+import es.mentor.act8.despensa.model.Despensa;
+import es.mentor.act8.despensa.model.Producto;
+import es.mentor.act8.despensa.model.ProductoDespensa;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;

@@ -1,4 +1,7 @@
-package es.marquesgomez;
+package es.mentor.act8.despensa;
+
+import es.mentor.act8.despensa.database.BaseDeDatos;
+import es.mentor.act8.despensa.model.Despensa;
 
 public final class Var {
 	
