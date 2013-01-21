@@ -5,7 +5,7 @@
     		  android:layout_height="fill_parent"
     		  android:id="@+id/main"
     	>
-    <ListView android:id="@+id/LstOpciones"
+    <ListView android:id="@android:id/list"
     		  android:layout_height="fill_parent"
     		  android:layout_width="fill_parent"
     		  android:cacheColorHint="#3500ffff"
@@ -13,7 +13,7 @@
     		  
     		  />
     <TextView
-            android:id="@+id/mainListViewBackgroundText"
+            android:id="@android:id/empty"
             android:layout_height="fill_parent"
             android:layout_width="fill_parent"
             android:text="Lista vacia. Añade una despensa desde el botón +"

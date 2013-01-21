@@ -16,7 +16,6 @@ public class ProductoDespensa {
 	
 	
 	public ProductoDespensa() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public ProductoDespensa(int idDespensa, long idProducto, String nombre, int stock, int stockMin, String codBarras){
@@ -123,6 +122,10 @@ public class ProductoDespensa {
 
 	public void setMultiplicador(int multiplicador) {
 		this.multiplicador = multiplicador;
+	}
+	
+	public boolean isEndStock(){
+		return stock <= stockMin;
 	}
 	
 }

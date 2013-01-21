@@ -1,13 +1,10 @@
 package es.mentor.act8.despensa.ui;
 
-import es.marquesgomez.R;
-import es.mentor.act8.despensa.Constantes;
-import es.mentor.act8.despensa.Var;
-import es.mentor.act8.despensa.database.BaseDeDatos;
-import es.mentor.act8.despensa.model.Producto;
-import es.mentor.act8.despensa.model.ProductoDespensa;
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -16,27 +13,30 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import es.mentor.act8.despensa.App;
+import es.mentor.act8.despensa.Constantes;
+import es.mentor.act8.despensa.R;
+import es.mentor.act8.despensa.model.Producto;
+import es.mentor.act8.despensa.model.ProductoDespensa;
 
-public class ListaProductos extends Activity {
+public class ListaProductos extends ListActivity {
 	
-	private BaseDeDatos conexion;
-	private Producto[] listProductos;
-	private ListView lstProductos;
+	private ArrayList<Producto> listProductos;
+	private AdaptadorProductos mAdaptador;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState){
-		Log.d(Constantes.LOG_TAG, "ListaProductos.java - onCreate()");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.productos);
 		
-		this.conexion = Var.conexion;
+		listProductos = new ArrayList<Producto>();
+		mAdaptador = new AdaptadorProductos(this, listProductos);
+		setListAdapter(mAdaptador);
 		
 		listarProductos();
 	}
@@ -48,63 +48,17 @@ public class ListaProductos extends Activity {
 	}
 	
 	public void listarProductos() {
-		Log.d(Constantes.LOG_TAG,"listarProductos() - ");
-		
-		listProductos = conexion.getProductos();
-		AdaptadorProductos adaptador;
-		lstProductos = (ListView) findViewById(R.id.LstProductos);
-		
-		Log.d(Constantes.LOG_TAG,"listarProductos() - Antes del if null");
-
-		if (listProductos[0].getId() != 0) {
-			Log.d(Constantes.LOG_TAG, "listarProductos() - Existen productos en despensa");
-
-			adaptador = new AdaptadorProductos(this);
-			Log.d(Constantes.LOG_TAG,"listarProductos() - despues de init adaptador");
-
-			lstProductos.setVisibility(View.VISIBLE);
-//			registerForContextMenu(lstProductos);
-			Log.d(Constantes.LOG_TAG,"listarProductos() - Despues de register");
-
-			lstProductos
-					.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-						public void onItemClick(AdapterView<?> a, View v,
-								int position, long id) {
-							// Acciones necesarias al hacer click
-							// Intent intent = new Intent(HolaUsuario.this,
-							// FrmMensaje.class);
-							//
-							// Bundle bundle = new Bundle();
-							// bundle.putString("NOMBRE", datos[position]);
-							// intent.putExtras(bundle);
-							// startActivity(intent);
-							Toast.makeText(ListaProductos.this,
-									"Producto: "+listProductos[position].getNombre(),
-									Toast.LENGTH_LONG).show();
-
-						}
-					});
-		} else {
-			Log.d(Constantes.LOG_TAG,"listarProductos() - No existen productos en despensa");
-			adaptador = new AdaptadorProductos(this);
-			lstProductos.setVisibility(View.INVISIBLE);
-			Toast.makeText(ListaProductos.this,
-					"No existe ningun \nproducto",
-					Toast.LENGTH_LONG).show();
-		}
-
-		lstProductos.setAdapter(adaptador);
-
-	}//Fin listarProductos
+		listProductos.clear();
+		listProductos.addAll(App.getDatabase().getProductos());
+		mAdaptador.notifyDataSetChanged();
+	}
 	
-	@SuppressWarnings("rawtypes")
-	class AdaptadorProductos extends ArrayAdapter {
+	class AdaptadorProductos extends ArrayAdapter<Producto> {
 		
 		Activity context;
 
-		@SuppressWarnings("unchecked")
-		AdaptadorProductos(Activity context) {
-			super(context, R.layout.listitem_producto, listProductos);
+		AdaptadorProductos(Activity context, ArrayList<Producto> objects) {
+			super(context, R.layout.listitem_producto, objects);
 			this.context = context;
 		}
 
@@ -113,40 +67,26 @@ public class ListaProductos extends Activity {
 			LayoutInflater inflater = context.getLayoutInflater();
 			View item = inflater.inflate(R.layout.listitem_producto, null);
 			
-//			final long idProducto = listProductos[position].getId();
+			final Producto productoItem = getItem(position);
 			
 			TextView lblNombreP = (TextView) item.findViewById(R.id.LblItemProductoNombre);
-			lblNombreP.setText(listProductos[position].getNombre());
+			lblNombreP.setText(productoItem.getNombre());
 			TextView lblCodigoBarras = (TextView) item.findViewById(R.id.LblItemProductoCodigoBarras);
-			lblCodigoBarras.setText(listProductos[position].getCodigoBarras());
+			lblCodigoBarras.setText(productoItem.getCodigoBarras());
 			ImageView imgAdd = (ImageView)item.findViewById(R.id.ImgItemProductoAddADespensa);
 			ImageView imgEliminar = (ImageView)item.findViewById(R.id.ImgItemProductoEliminar);
 						
-			//Evento al hacer click a un item
-			item.setOnClickListener(new View.OnClickListener() {
-				
-				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					Toast.makeText(ListaProductos.this,
-							"Producto: "+listProductos[position].getNombre(),
-							Toast.LENGTH_LONG).show();
-				}
-			});
-			
 			item.setOnLongClickListener(new View.OnLongClickListener() {
 				
 				public boolean onLongClick(View v) {
-					// TODO Auto-generated method stub
 					//Implementar alertDialog para editar el producto.
-//					registerForContextMenu(lstProductos);
-//					return true;
 					AlertDialog.Builder alert = new AlertDialog.Builder(context);
 
-                    alert.setTitle("Editar "+listProductos[position].getNombre());
+                    alert.setTitle("Editar "+productoItem.getNombre());
 
                     // Set an EditText view to get user input
                     final EditText input = new EditText(context);
-                    input.setText(listProductos[position].getNombre());
+                    input.setText(productoItem.getNombre());
                     alert.setView(input);
 
                     alert.setPositiveButton(R.string.aceptar, new DialogInterface.OnClickListener() {
@@ -156,11 +96,8 @@ public class ListaProductos extends Activity {
                             if (value.toString().equals(""))
                                 return;
 
-                            Producto itemToEdit = listProductos[position];
-                            itemToEdit.setNombre(value.toString());
-//                            update(itemToEdit);
-//                            if (conexion.updateProducto(itemToEdit))
-                            	listarProductos();
+                            productoItem.setNombre(value.toString());
+                            listarProductos();
                         }
                     });
 
@@ -178,18 +115,17 @@ public class ListaProductos extends Activity {
 			imgAdd.setOnClickListener(new View.OnClickListener() {
 				
 				public void onClick(View v) {
-					// TODO Auto-generated method stub
 					// Create an input dialog
 					String msg;
 					ProductoDespensa producto = new ProductoDespensa();
-					producto.setIdDespensa(Var.despensaSelec.getId());
-					producto.setIdProducto(listProductos[position].getId());
+					producto.setIdDespensa(App.despensaSelec.getId());
+					producto.setIdProducto(productoItem.getId());
 					producto.setStock(1);
 					producto.setStockMin(0);
 					producto.setCantidadAComprar(1);
 
-					if (conexion.insertarProductoADespensa(producto))
-						msg="Producto añadido";
+					if (App.getDatabase().insertarProductoADespensa(producto))
+						msg="Producto a�adido";
 					else
 						msg="Ya estaba en \nla despensa";
 					
@@ -200,27 +136,18 @@ public class ListaProductos extends Activity {
 			imgEliminar.setOnClickListener(new View.OnClickListener() {
 				
 				public void onClick(View v) {
-					// TODO Auto-generated method stub
 					// Create an input dialog
 
 					AlertDialog.Builder alert = new AlertDialog.Builder(context);
 					
-					alert.setTitle("Eliminar "+listProductos[position].getNombre());
+					alert.setTitle("Eliminar "+productoItem.getNombre());
 					
 					alert.setMessage("Eliminando este producto, se eliminará de las despensas y listas de la compra. ¿Desea continuar?");
 					
 					alert.setPositiveButton(R.string.aceptar, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
 
-//                            Editable value = input.getText();
-//                            if (value.toString().equals(""))
-//                                return;
-//
-//                            Producto itemToEdit = listProductos[position];
-//                            itemToEdit.setNombre(value.toString());
-//                            update(itemToEdit);
-                        	Producto itemToEdit = listProductos[position];
-                            if (conexion.eliminarProducto(itemToEdit))
+                            if (App.getDatabase().eliminarProducto(productoItem))
                             	listarProductos();
                         }
                     });
@@ -231,7 +158,6 @@ public class ListaProductos extends Activity {
                     });
 
                     alert.show();
-//					conexion.actualizarStockXidProducto(idProducto, Var.despensaSelec.getId(), -1);
 					listarProductos();
 				}
 			});

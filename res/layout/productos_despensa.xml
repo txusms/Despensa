@@ -10,12 +10,12 @@
     	android:layout_width="fill_parent" 
     	android:layout_height="wrap_content" />
     
-    <ListView android:id="@+id/LstProductosDespensa" 
+    <ListView android:id="@android:id/list" 
     		  android:layout_height="wrap_content" 
     		  android:layout_width="fill_parent"
     		  android:layout_weight="1.0"></ListView>
     <TextView
-            android:id="@+id/mainTextBackground"
+            android:id="@android:id/empty"
             android:layout_height="fill_parent"
             android:layout_width="fill_parent"
             android:text="Lista vacia. Puedes añadir productos desde 'Nuevo', seleccionarlo desde la lista de productos y también puedes escaneando su código de barras. "

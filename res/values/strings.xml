@@ -8,9 +8,14 @@
     <string name="aceptar">Aceptar</string>
     <string name="cancelar">Cancelar</string>
     <string name="add">Añadir</string>
-    <string name="hint_add">Nombre despensa</string>
-    <string name="tittle_add">Nueva despensa</string>
     <string name="accion">Accion</string>
     <string name="si">Si</string>
     <string name="no">No</string>
+    <string name="msg_error_add_despensa">Error al añadir \nla despensa</string>
+    <string name="msg_error_clone_despensa">Error al duplicar \nla despensa</string>
+    <string name="dialog_title_new_despensa">Nueva despensa</string>
+    <string name="dialog_title_clone_despensa">Duplicar despensa</string>
+    <string name="hint_name">Nombre</string>
+    <string name="hint_barcode">Código de barras</string>
+    
 </resources>

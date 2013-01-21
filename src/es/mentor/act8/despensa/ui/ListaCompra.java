@@ -1,12 +1,10 @@
 package es.mentor.act8.despensa.ui;
 
-import es.marquesgomez.R;
-import es.mentor.act8.despensa.Constantes;
-import es.mentor.act8.despensa.Var;
-import es.mentor.act8.despensa.database.BaseDeDatos;
-import es.mentor.act8.despensa.model.ProductoDespensa;
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -15,19 +13,21 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import es.mentor.act8.despensa.App;
+import es.mentor.act8.despensa.Constantes;
+import es.mentor.act8.despensa.R;
+import es.mentor.act8.despensa.model.ProductoDespensa;
 
-public class ListaCompra extends Activity {
+public class ListaCompra extends ListActivity {
 	
-	private BaseDeDatos conexion;
-	private ProductoDespensa[] listProductosCompra;
-	private ListView lstProductosCompra;
+	private ArrayList<ProductoDespensa> listProductosCompra;
+	private AdaptadorProductosCompra mAdaptador;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState){
@@ -35,7 +35,10 @@ public class ListaCompra extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.lista_compra);
 		
-		this.conexion = Var.conexion;
+		listProductosCompra = new ArrayList<ProductoDespensa>();
+		mAdaptador = new AdaptadorProductosCompra(this, listProductosCompra);
+		setListAdapter(mAdaptador);	
+		registerForContextMenu(getListView());
 		
 		Button btnFinalizarCompra = (Button)findViewById(R.id.BtnFinCompra);
 		
@@ -44,7 +47,6 @@ public class ListaCompra extends Activity {
 		btnFinalizarCompra.setOnClickListener(new View.OnClickListener() {
 			
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				AlertDialog.Builder alert = new AlertDialog.Builder(ListaCompra.this);
 				
 				alert.setTitle("Finalizar la compra");
@@ -53,7 +55,7 @@ public class ListaCompra extends Activity {
 				alert.setPositiveButton(R.string.si, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                     	finCompra();
-                    	conexion.eliminarProductosCompra();
+                    	App.getDatabase().eliminarProductosCompra();
                     	listarProductosCompra();
                     }
                 });
@@ -66,13 +68,6 @@ public class ListaCompra extends Activity {
                 });
 
                 alert.show();
-//				if (conexion.finalizarCompra(Var.despensaSelec.getId())){
-//					Toast.makeText(ListaCompra.this,"Fin OK",Toast.LENGTH_LONG).show();
-//					listarProductosCompra();
-//				}
-//				else
-//					Toast.makeText(ListaCompra.this,"Fin ERROR",Toast.LENGTH_LONG).show();
-				
 			}
 		});
 	}
@@ -85,7 +80,7 @@ public class ListaCompra extends Activity {
 	
 	public void finCompra(){
 		
-		if (conexion.finalizarCompra(Var.despensaSelec.getId())){
+		if (App.getDatabase().finalizarCompra(App.despensaSelec.getId())){
 			Toast.makeText(ListaCompra.this,"Fin OK",Toast.LENGTH_LONG).show();
 			
 		}
@@ -95,57 +90,25 @@ public class ListaCompra extends Activity {
 	}
 	
 	public void listarProductosCompra() {
-		Log.d(Constantes.LOG_TAG,"listarProductosCompra() - ");
-		
-		listProductosCompra = conexion.getProductosCompra(Var.despensaSelec.getId());
-		AdaptadorProductosCompra adaptador;
-		lstProductosCompra = (ListView) findViewById(R.id.LstProductosCompra);
-		TextView txtBackground = (TextView)findViewById(R.id.lista_compraTextBackground);
-		
-		
-		Log.d(Constantes.LOG_TAG,"listarProductosCompra() - Antes del if null");
-
-		if (listProductosCompra[0].getIdDespensa() != 0) {
-			Log.d(Constantes.LOG_TAG, "listarProductosCompra() - Existen productos en compra");
-
-			adaptador = new AdaptadorProductosCompra(this);
-			Log.d(Constantes.LOG_TAG,"listarProductosCompra() - despues de init adaptador");
-
-			lstProductosCompra.setVisibility(View.VISIBLE);
-//			registerForContextMenu(lstProductos);
-			txtBackground.setVisibility(ListView.GONE);
-			Log.d(Constantes.LOG_TAG,"listarProductos() - Despues de register");
-
-			lstProductosCompra
-					.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-						public void onItemClick(AdapterView<?> a, View v,
-								int position, long id) {
-							Toast.makeText(ListaCompra.this,
-									"Producto: "+listProductosCompra[position].getNombre(),
-									Toast.LENGTH_LONG).show();
-							a.updateViewLayout(v, null);
-
-						}
-					});
-		} else {
-			Log.d(Constantes.LOG_TAG,"listarProductosCompra() - No existen productos en despensa");
-			adaptador = new AdaptadorProductosCompra(this);
-			lstProductosCompra.setVisibility(View.INVISIBLE);
-			txtBackground.setVisibility(ListView.VISIBLE);
-		}
-
-		lstProductosCompra.setAdapter(adaptador);
-
-	}//Fin listarProductos
+		listProductosCompra.clear();
+		listProductosCompra.addAll(App.getDatabase().getProductosCompra(App.despensaSelec.getId()));
+		mAdaptador.notifyDataSetChanged();
+	}
 	
-	@SuppressWarnings("rawtypes")
-	class AdaptadorProductosCompra extends ArrayAdapter {
+	@Override
+	protected void onListItemClick(ListView l, View v, int position, long id) {
+		Toast.makeText(ListaCompra.this,
+				"Producto: "+listProductosCompra.get(position).getNombre(),
+				Toast.LENGTH_LONG).show();
+		l.updateViewLayout(v, null);
+	}
+	
+	class AdaptadorProductosCompra extends ArrayAdapter<ProductoDespensa> {
 		
 		Activity context;
 
-		@SuppressWarnings("unchecked")
-		AdaptadorProductosCompra(Activity context) {
-			super(context, R.layout.listitem_compra, listProductosCompra);
+		AdaptadorProductosCompra(Activity context, ArrayList<ProductoDespensa> objects) {
+			super(context, R.layout.listitem_compra, objects);
 			this.context = context;
 		}
 
@@ -154,36 +117,30 @@ public class ListaCompra extends Activity {
 			LayoutInflater inflater = context.getLayoutInflater();
 			View item = inflater.inflate(R.layout.listitem_compra, null);
 			
-			final long idProducto = listProductosCompra[position].getIdProducto();
+			final ProductoDespensa productoItem = getItem(position);
+//			final long idProducto = listProductosCompra[position].getIdProducto();
 			
 			TextView lblNombreP = (TextView) item.findViewById(R.id.LblItemCompraNombre);
-			lblNombreP.setText(listProductosCompra[position].getNombre());
-			Log.i(Constantes.LOG_TAG,"antes del if - formato producto comprado "+listProductosCompra[position].getComprado());
-			if (listProductosCompra[position].getComprado()>0){
+			lblNombreP.setText(productoItem.getNombre());
+			if (productoItem.getComprado()>0){
 				lblNombreP.setTextColor(Color.RED);
-				Log.i(Constantes.LOG_TAG,"formato producto comprado "+listProductosCompra[position].getComprado());
 			}
 			TextView lblCantidadP = (TextView) item.findViewById(R.id.LblItemCompraCantidad);
 			ImageView imgSuma = (ImageView)item.findViewById(R.id.ImgItemCompraSuma);
 			ImageView imgResta = (ImageView)item.findViewById(R.id.ImgItemCompraResta);
 			ImageView imgEliminar = (ImageView)item.findViewById(R.id.ImgItemCompraEliminar);
 			
-			int cantidad = listProductosCompra[position].getCantidadComprada();
-			lblCantidadP.setText(Integer.toString(cantidad));
-//			if (listProductosCompra[position].get() <= listProductosCompra[position].getStockMin())
-//				lblCantidadP.setTextColor(Color.RED);
+			lblCantidadP.setText(Integer.toString(productoItem.getCantidadComprada()));
 						
 			//Evento al hacer click a un item
 			item.setOnClickListener(new View.OnClickListener() {
-				
 				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					if (listProductosCompra[position].getComprado()==1)
-						listProductosCompra[position].setComprado(0);
+					if (productoItem.getComprado()==1)
+						productoItem.setComprado(0);
 					else
-						listProductosCompra[position].setComprado(1);
+						productoItem.setComprado(1);
 					
-					if (conexion.productoComprado(listProductosCompra[position])){
+					if (App.getDatabase().productoComprado(productoItem)){
 						Toast.makeText(ListaCompra.this,"Producto marcado",Toast.LENGTH_LONG).show();
 						listarProductosCompra();
 					}
@@ -191,21 +148,10 @@ public class ListaCompra extends Activity {
 				}
 			});
 			
-			item.setOnLongClickListener(new View.OnLongClickListener() {
-				
-				public boolean onLongClick(View v) {
-					// TODO Implementar alertDialog para editar el producto.
-					
-					registerForContextMenu(lstProductosCompra);
-					return false;
-				}
-			});
-			
 			imgSuma.setOnClickListener(new View.OnClickListener() {
 				
 				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					conexion.actualizarCantidadCompradaXidProducto(idProducto, Var.despensaSelec.getId(), 1);
+					App.getDatabase().actualizarCantidadCompradaXidProducto(productoItem.getIdProducto(), App.despensaSelec.getId(), 1);
 					listarProductosCompra();
 				}
 			});
@@ -213,8 +159,7 @@ public class ListaCompra extends Activity {
 			imgResta.setOnClickListener(new View.OnClickListener() {
 				
 				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					conexion.actualizarCantidadCompradaXidProducto(idProducto, Var.despensaSelec.getId(), -1);
+					App.getDatabase().actualizarCantidadCompradaXidProducto(productoItem.getIdProducto(), App.despensaSelec.getId(), -1);
 					listarProductosCompra();
 				}
 			});
@@ -222,17 +167,14 @@ public class ListaCompra extends Activity {
 			imgEliminar.setOnClickListener(new View.OnClickListener() {
 				
 				public void onClick(View v) {
-					// TODO Auto-generated method stub
 					AlertDialog.Builder alert = new AlertDialog.Builder(context);
 					
-					alert.setTitle(listProductosCompra[position].getNombre());
+					alert.setTitle(productoItem.getNombre());
 					alert.setMessage("Eliminar?");
 					
 					alert.setPositiveButton(R.string.aceptar, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
-
-                        	ProductoDespensa itemToEdit = listProductosCompra[position];
-                            if (conexion.eliminarProductoCompra(itemToEdit))
+                            if (App.getDatabase().eliminarProductoCompra(productoItem))
                             	listarProductosCompra();
                         }
                     });
@@ -243,7 +185,6 @@ public class ListaCompra extends Activity {
                     });
 
                     alert.show();
-//					conexion.actualizarStockXidProducto(idProducto, Var.despensaSelec.getId(), -1);
 					listarProductosCompra();
 				}
 			});

@@ -1,39 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:orientation="vertical"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent">
-    <TextView android:text="Lista de la compra:" android:id="@+id/textView1" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
-    <ListView android:layout_width="match_parent" android:layout_weight="1.0" android:id="@+id/LstProductosCompra" android:layout_height="wrap_content"></ListView>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
     <TextView
-            android:id="@+id/lista_compraTextBackground"
-            android:layout_height="fill_parent"
-            android:layout_width="fill_parent"
-            android:text="Lista vacia. Puedes añadir productos a la lista desde la despensa, generando la lista y también seleccionando el producto. "
-            android:layout_weight="1.0"
-            android:gravity="center"
-            android:layout_gravity="center_vertical|center_horizontal"
-            android:textColor="#3500ffff"
-            android:textSize="20dip"
-            />
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Lista de la compra:" >
+    </TextView>
+
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.0" >
+    </ListView>
+
+    <TextView
+        android:id="@android:id/empty"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:layout_weight="1.0"
+        android:gravity="center"
+        android:text="Lista vacia. Puedes añadir productos a la lista desde la despensa, generando la lista y también seleccionando el producto. "
+        android:textColor="#3500ffff"
+        android:textSize="20dip" />
+
     <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical|center_horizontal"
+        android:padding="10dip" >
+
+        <Button
+            android:id="@+id/BtnFinCompra"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_width="fill_parent"
-            android:layout_gravity="center_vertical|center_horizontal"
-            android:padding="10dip"
-            >
-       
-		         <Button
-		                android:id="@+id/BtnFinCompra"
-		                android:layout_centerInParent="true"
-		                android:layout_height="wrap_content"
-		                android:layout_width="wrap_content"
-		                android:text="Fin Compra"
-		                android:textStyle="bold"
-		                android:textSize="18dip"
-		                android:textColor="#000000"
-		                android:paddingLeft="15dip"
-		                android:paddingRight="15dip"/> 
-    </RelativeLayout> 
+            android:layout_centerInParent="true"
+            android:paddingLeft="15dip"
+            android:paddingRight="15dip"
+            android:text="Fin Compra"
+            android:textColor="#000000"
+            android:textSize="18dip"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
 </LinearLayout>

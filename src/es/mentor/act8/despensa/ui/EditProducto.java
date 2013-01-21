@@ -1,13 +1,5 @@
 package es.mentor.act8.despensa.ui;
 
-import es.marquesgomez.R;
-import es.mentor.act8.despensa.Constantes;
-import es.mentor.act8.despensa.Var;
-import es.mentor.act8.despensa.database.BaseDeDatos;
-import es.mentor.act8.despensa.model.Producto;
-import es.mentor.act8.despensa.model.ProductoDespensa;
-import es.mentor.act8.despensa.utils.barcode.IntentIntegrator;
-import es.mentor.act8.despensa.utils.barcode.IntentResult;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -15,14 +7,20 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.Toast;
+import es.mentor.act8.despensa.App;
+import es.mentor.act8.despensa.Constantes;
+import es.mentor.act8.despensa.R;
+import es.mentor.act8.despensa.database.BaseDeDatos;
+import es.mentor.act8.despensa.model.Producto;
+import es.mentor.act8.despensa.model.ProductoDespensa;
+import es.mentor.act8.despensa.utils.barcode.IntentIntegrator;
+import es.mentor.act8.despensa.utils.barcode.IntentResult;
 
 public class EditProducto extends Activity {
 	
@@ -31,7 +29,6 @@ public class EditProducto extends Activity {
 	private View lytStock;
 	private EditText txtBarCode;
 	private CheckBox chbAddEnDespensa;
-	private Spinner cmbCategorias;
 	private EditText txtNombre;
 	private EditText txtNotas;
 	private ImageView imgScan;
@@ -50,7 +47,7 @@ public class EditProducto extends Activity {
         
         Log.d(Constantes.LOG_TAG, "Producto.java - onCreate()");
         
-        this.conexion = Var.conexion;
+        this.conexion = App.getDatabase();
         
         final Button btnGuardar = (Button)findViewById(R.id.BtnGuardar);
         final Button btnCancelar = (Button)findViewById(R.id.BtnCancelar);
@@ -63,16 +60,6 @@ public class EditProducto extends Activity {
         txtCantidad = (EditText)findViewById(R.id.txtCantidad);
         txtCantidadMinima = (EditText)findViewById(R.id.txtCantidadMinima);
         txtCantidadAComprar = (EditText)findViewById(R.id.txtCantidadAComprar);
-        
-        cmbCategorias = (Spinner)findViewById(R.id.CmbCategorias);
-        
-        
-        final String[] datos = new String[]{"Elem1","Elem2","Elem3","Elem4","Elem5"};
-    	ArrayAdapter<String> adaptador = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, datos);
-        
-        adaptador.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-   		cmbCategorias.setAdapter(adaptador);
-
         
         Bundle bundle = getIntent().getExtras();
         accion = bundle.getInt(Constantes.ACCION);
@@ -143,18 +130,13 @@ public class EditProducto extends Activity {
         btnCancelar.setOnClickListener(new OnClickListener() {
 			
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				//guardarProducto();
-//				this.dispatchKeyEvent(new Keyevent(ACTION_DOWN, KEYCODE_BACK));
 				finish();
-//				EditProducto.onBackPressed();
 			}
 		});
         
         imgScan.setOnClickListener(new OnClickListener() {
 			
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				scanCode();
 			}
 		});
@@ -204,41 +186,25 @@ public class EditProducto extends Activity {
 		nuevoProducto.setNombre(txtNombre.getText().toString().trim());
 		nuevoProducto.setCodigoBarras(txtBarCode.getText().toString().trim());
 		nuevoProducto.setNotas(txtNotas.getText().toString().trim());
-//		nuevoProducto.setIdCategoria(0);
-		
-		
-//		cmbCategorias.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//			public void onItemSelected(AdapterView<?> parent, android.view.View v, int position, long id) {
-//				Log.i(Constantes.LOG_TAG,"Categoria seleccionada: "+parent.getItemAtPosition(position)+" "+(Integer) parent.getItemAtPosition(position));
-//				nuevoProducto.setIdCategoria((Integer) parent.getItemAtPosition(position));
-//			}
-//			@Override
-//            public void onNothingSelected(AdapterView<?> arg0) {
-//                // TODO Auto-generated method stub
-//                nuevoProducto.setIdCategoria(cmbCategorias.getChildCount());
-//            } 
-//		});
 		
 		long idProducto = conexion.insertarProducto(nuevoProducto);
 		
 		if (idProducto>0){
 			if (chbAddEnDespensa.isChecked()){
 				
-				productoEdit.setIdDespensa(Var.despensaSelec.getId());
+				productoEdit = conexion.getProductoDespensa(idProducto);
+				
+				productoEdit.setIdDespensa(App.despensaSelec.getId());
 				productoEdit.setIdProducto(idProducto);
 				productoEdit.setStock(Integer.parseInt(txtCantidad.getText().toString()));
 				productoEdit.setStockMin(Integer.parseInt(txtCantidadMinima.getText().toString()));
 				productoEdit.setCantidadAComprar(Integer.parseInt(txtCantidadAComprar.getText().toString()));
 				
-//				int stock = Integer.parseInt(txtCantidad.getText().toString());
-//				int stockMin = Integer.parseInt(txtCantidadMinima.getText().toString());
-//				int cantidadAComprar = Integer.parseInt(txtCantidadAComprar.getText().toString());
-//				conexion.insertarProductoADespensa(idProducto, Var.despensaSelec.getId(), stock, stockMin, cantidadAComprar);
 				conexion.insertarProductoADespensa(productoEdit);
 			}
 			Log.d(Constantes.LOG_TAG, "guardarProducto() - OK");
 			Toast.makeText(EditProducto.this,"Producto introducido",Toast.LENGTH_SHORT).show();
-			
+			finish();
 		} else {
 			Log.d(Constantes.LOG_TAG, "guardarProducto() - NO OK");
 			Toast.makeText(EditProducto.this,"Producto no \nintroducido",Toast.LENGTH_SHORT).show();
@@ -248,7 +214,6 @@ public class EditProducto extends Activity {
 	}
 	
 	protected void guardarProductoEditado() {
-		// TODO Auto-generated method stub
 		Log.d(Constantes.LOG_TAG, "guardarProductoEditado()");
 		final Producto productoPEdit = new Producto();
 		
@@ -258,7 +223,6 @@ public class EditProducto extends Activity {
 		productoEdit.setStockMin(Integer.parseInt(txtCantidadMinima.getText().toString()));
 		productoEdit.setCantidadAComprar(Integer.parseInt(txtCantidadAComprar.getText().toString()));
 //		productoEdit.setNotas(txtNotas.getText().toString().trim());
-//		nuevoProducto.setIdCategoria(0);
 		productoPEdit.setId(productoEdit.getIdProducto());
 		productoPEdit.setNombre(productoEdit.getNombre());
 		if (productoEdit.getCodigoBarras().length()>0)
@@ -267,19 +231,7 @@ public class EditProducto extends Activity {
 			productoPEdit.setCodigoBarras(null);
 		
 		
-//		cmbCategorias.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//			public void onItemSelected(AdapterView<?> parent, android.view.View v, int position, long id) {
-//				Log.i(Constantes.LOG_TAG,"Categoria seleccionada: "+parent.getItemAtPosition(position)+" "+(Integer) parent.getItemAtPosition(position));
-//				nuevoProducto.setIdCategoria((Integer) parent.getItemAtPosition(position));
-//			}
-//			@Override
-//            public void onNothingSelected(AdapterView<?> arg0) {
-//                // TODO Auto-generated method stub
-//                nuevoProducto.setIdCategoria(cmbCategorias.getChildCount());
-//            } 
-//		});
 		
-//		long idProducto = conexion.insertarProducto(productoEdit);
 		String msg;
 		if (conexion.updateProducto(productoPEdit)){
 			if (conexion.updateProductoDespensa(productoEdit)){
@@ -289,6 +241,7 @@ public class EditProducto extends Activity {
 			}
 			Log.d(Constantes.LOG_TAG, "guardarProductoEditado() - OK");
 			msg="Producto \nactualizado";
+			finish();
 			
 		} else {
 			Log.d(Constantes.LOG_TAG, "guardarProductoEditado() - NO OK");

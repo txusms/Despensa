@@ -1,25 +1,23 @@
 package es.mentor.act8.despensa.database;
 
-import es.mentor.act8.despensa.Constantes;
-import es.mentor.act8.despensa.Var;
-import es.mentor.act8.despensa.model.Categoria;
-import es.mentor.act8.despensa.model.Despensa;
-import es.mentor.act8.despensa.model.Producto;
-import es.mentor.act8.despensa.model.ProductoDespensa;
+import java.util.ArrayList;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
-
-//import android.widget.Toast;
+import es.mentor.act8.despensa.App;
+import es.mentor.act8.despensa.Constantes;
+import es.mentor.act8.despensa.model.Categoria;
+import es.mentor.act8.despensa.model.Despensa;
+import es.mentor.act8.despensa.model.Producto;
+import es.mentor.act8.despensa.model.ProductoDespensa;
 
 public class BaseDeDatos extends SQLiteOpenHelper {
 
-	// Definición de las tablas y sus campos.
+	// Definici�n de las tablas y sus campos.
 	private class TablaDespensas {
 		static final String tabla = "Despensas";
 		static final String id = "_id";
@@ -125,15 +123,13 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 	 * @param factory
 	 * @param version
 	 */
-	public BaseDeDatos(Context contexto, String nombre, CursorFactory factory,
-			int version) {
-		super(contexto, nombre, factory, version);
+	public BaseDeDatos(Context contexto) {
+		super(contexto, Constantes.BD_NAME, null, Constantes.BD_VERSION);
 	}
 	
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		Log.d(Constantes.LOG_TAG, "BaseDeDatos - onCreate()");
 		// Se ejecuta la sentencia SQL de creación de la tabla
 		db.execSQL(sqlCreate_Despensas);
 		db.execSQL(sqlCreate_Categorias);
@@ -145,7 +141,6 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int versionAnterior,
 			int versionNueva) {
-		Log.d(Constantes.LOG_TAG, "BaseDeDatos - onUpgrade()");
 
 		// NOTA: Por simplicidad del ejemplo aquí utilizamos directamente la
 		// opción de
@@ -178,54 +173,33 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 	 * 
 	 * @return Despensa[]
 	 */
-	public Despensa[] getDespensas() {
-		Log.d(Constantes.LOG_TAG, "getDespensas()");
-		// private String[] despensas;
-		Despensa despensas[];
-
-		Despensa despensaVacio = new Despensa("", 0);
+	public ArrayList<Despensa> getDespensas() {
+		ArrayList<Despensa> despensas = new ArrayList<Despensa>();
 
 		SQLiteDatabase db = this.getReadableDatabase();
 		if (db != null) {
-			Log.d(Constantes.LOG_TAG, "getDespensas() - Antes del SELECT");
 			Cursor c = db.rawQuery(" SELECT * FROM " + TablaDespensas.tabla
 					+ " ORDER BY " + TablaDespensas.nombre, null);
-			Log.d(Constantes.LOG_TAG, "getDespensas() - Despues del SELECT");
 
 			// Nos aseguramos de que existe al menos un registro
 			if (c.moveToFirst()) {
-				Log.d(Constantes.LOG_TAG, "getDespensas() - Dentro movefirst");
 				// Recorremos el cursor hasta que no haya más registros
 
-				despensas = new Despensa[c.getCount()];
-				int i = 0;
-
+				
 				do {
-					Log.d(Constantes.LOG_TAG,
-							"getDespensas() - Dentro do-while " + i);
-
-					despensas[i] = new Despensa(c.getString(1), c.getInt(0));
-					i++;
-
+					despensas.add(new Despensa(c.getString(1), c.getInt(0)));
 				} while (c.moveToNext());
 
-			} else {
-				despensas = new Despensa[] { despensaVacio };
-			}
+			} 
+			
 			if (c != null && !c.isClosed()) {
-				Log.d(Constantes.LOG_TAG,
-				"getDespensas() - Cerrar cursor");
 				c.close();
 			}
-		} else {
-			despensas = new Despensa[] { despensaVacio };
-		}
+		} 
 		
 		
 		// Cerramos la base de datos
 		db.close();
-		Log.d(Constantes.LOG_TAG,
-				"getDespensa() - Return: " + despensas.toString());
 		return despensas;
 
 	} // Fin getDespensas
@@ -237,7 +211,6 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 	 * @return resultado
 	 */
 	public long addDespensa(String desp) {
-		Log.d(Constantes.LOG_TAG, "añadirDespensas() - Despensa: " + desp);
 
 		long result = 0;
 
@@ -255,7 +228,6 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 
 		// Cerramos la base de datos
 		db.close();
-		Log.d(Constantes.LOG_TAG, "añadirDespensas() - Return: " + result);
 		return result;
 
 	} // Fin añadirDespensa
@@ -267,21 +239,17 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 	 * @return resultado
 	 */
 	public boolean existeDespensa(String desp) {
-		Log.d(Constantes.LOG_TAG, "existeDespensa() - Despensa: " + desp);
 		boolean result = false;
 
 		SQLiteDatabase db = this.getReadableDatabase();
 		if (db != null) {
-			Log.d(Constantes.LOG_TAG, "existeDespensa() - Antes del SELECT");
 			Cursor c = db.rawQuery(" SELECT * FROM " + TablaDespensas.tabla
 					+ " WHERE " + TablaDespensas.nombre + "='" + desp + "'",
 					null);
-			Log.d(Constantes.LOG_TAG, "existeDespensa() - Despues del SELECT");
 
 			// Nos aseguramos de que existe al menos un registro
 			if (c.moveToFirst()) {
 
-				Log.d(Constantes.LOG_TAG, "existeDespensa() - Existe una");
 				result = true;
 
 			}
@@ -289,7 +257,6 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 		}
 		// Cerramos la base de datos
 		// db.close();
-		Log.d(Constantes.LOG_TAG, "existeDespensa() - Return: " + result);
 		return result;
 
 	} // Fin existeDespensa
@@ -301,7 +268,6 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 	 * @return resultado
 	 */
 	public boolean eliminarDespensa(Despensa desp) {
-		Log.d(Constantes.LOG_TAG, "eliminarDespensa() - Despensa: " + desp);
 		boolean result = false;
 		SQLiteDatabase db = this.getWritableDatabase();
 		// Si hemos abierto correctamente la base de datos
@@ -311,7 +277,6 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 
 			result = true;
 		}
-		Log.d(Constantes.LOG_TAG, "eliminarDespensa() - Return: " + result);
 		return result;
 
 	} // Fin eliminarDespensa
@@ -324,35 +289,25 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 	 * @return
 	 */
 	private boolean buscarCodBarrasDespensa(String codBarras, int despensa) {
-		Log.d(Constantes.LOG_TAG, "buscarCodBarrasDespensa() - codBarras: "
-				+ codBarras + " Despensa: " + despensa);
 		boolean result = false;
 
 		SQLiteDatabase db = this.getReadableDatabase();
 		if (db != null) {
-			Log.d(Constantes.LOG_TAG, "Dentro buscarCodBarrasDespensa");
 			Cursor c = db.rawQuery(" SELECT * FROM " + TablaContenido.tabla
 					+ " WHERE " + TablaContenido.idDespensa + "= " + despensa
 					+ " AND " + TablaContenido.idProducto + "=(SELECT "
 					+ TablaProductos.id + " FROM " + TablaProductos.tabla
 					+ " WHERE " + TablaProductos.codBarras + " = '" + codBarras
 					+ "' );", null);
-			Log.d(Constantes.LOG_TAG, "Despues SELECT buscarCodBarrasDespensa");
 
 			// Nos aseguramos de que existe al menos un registro
 			if (c.moveToFirst()) {
 
-				Log.d(Constantes.LOG_TAG,
-						"buscarCodBarrasDespensa() - Existe un producto");
 				result = true;
 
 			}
 
 		}
-		// Cerramos la base de datos
-		// db.close();
-		Log.d(Constantes.LOG_TAG, "buscarCodBarrasDespensa() - Return: "
-				+ result);
 		return result;
 	}
 
@@ -364,7 +319,6 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 	 * @return
 	 */
 	private boolean buscarCodBarrasProducto(String codBarras) {
-		Log.d(Constantes.LOG_TAG, "buscarCodBarrasProducto() - codBarras: "	+ codBarras);
 		boolean result = false;
 
 		SQLiteDatabase db = this.getReadableDatabase();
@@ -376,17 +330,10 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 			
 			// Nos aseguramos de que existe al menos un registro
 			if (c.moveToFirst()) {
-
-				Log.d(Constantes.LOG_TAG,"buscarCodBarrasProducto() - Existe un producto");
 				result = true;
-
 			}
 
 		}
-		// Cerramos la base de datos
-		// db.close();
-		Log.d(Constantes.LOG_TAG, "buscarCodBarrasProducto() - Result: "
-				+ result);
 		return result;
 	}
 
@@ -398,8 +345,6 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 	 * @return resultado
 	 */
 	public int buscarCodBarras(String codBarras, int despensa) {
-		Log.d(Constantes.LOG_TAG, "buscarCodBarras() - codbarras: " + codBarras
-				+ " idDespensa: " + despensa);
 		int result = 0;
 
 		if (buscarCodBarrasDespensa(codBarras, despensa)) {
@@ -410,7 +355,6 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 			result = Constantes.ESTADO_BARCODE_NO_EXISTE;
 		}
 
-		Log.d(Constantes.LOG_TAG, "buscarCodBarras() - Return: " + result);
 		return result;
 	}
 
@@ -421,7 +365,6 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 	 * @return
 	 */
 	public int getIdDespensa(String desp) {
-		Log.d(Constantes.LOG_TAG, "getIdDespensa() - Despensa: " + desp);
 		int result = 0;
 
 		SQLiteDatabase db = this.getReadableDatabase();
@@ -435,8 +378,6 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 			// Nos aseguramos de que existe al menos un registro
 			if (c.moveToFirst()) {
 
-				Log.d(Constantes.LOG_TAG, "Dentro movefirst getIdDespensa");
-				Log.d(Constantes.LOG_TAG, "getIdDespensa() - Extrar el _id");
 				result = c.getInt(0);
 
 			}
@@ -444,7 +385,6 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 		}
 		// Cerramos la base de datos
 		 db.close();
-		Log.d(Constantes.LOG_TAG, "getIdDespensa() - Result: " + result);
 		return result;
 	}
 
@@ -457,7 +397,6 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 	 * @return long
 	 */
 	public long insertarProducto(Producto producto) {
-		Log.d(Constantes.LOG_TAG, "insertarProducto() - idCategoria: "+producto.getIdCategoria());
 		long result = 0;
 
 		SQLiteDatabase db = this.getReadableDatabase();
@@ -485,8 +424,6 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 
 	public boolean insertarProductoADespensa(ProductoDespensa producto) {
 		
-		//(long idProducto, int idDespensa,int stock, int stockMin, int cantidadAcomprar)
-		Log.d(Constantes.LOG_TAG, "insertarProductoADespensa() - ");
 		boolean result = false;
 
 		SQLiteDatabase db = this.getReadableDatabase();
@@ -505,9 +442,6 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 
 			if (code > 0)
 				result = true;
-			Log.i(Constantes.LOG_TAG,
-					"insertarProductoADespensa() - resultado db.insert(): "
-							+ code);
 		}
 
 		db.close();
@@ -515,8 +449,6 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 	}
 
 	public long getIdProductoXBarCode(String codeBar) {
-		Log.d(Constantes.LOG_TAG, "getIdProductoXBarCode() - codeBar: "
-				+ codeBar);
 		long result = 0;
 
 		SQLiteDatabase db = this.getReadableDatabase();
@@ -541,9 +473,6 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 
 	public boolean actualizarStockXCode(String codBarras, int despensa,
 			int cantidad) {
-		Log.d(Constantes.LOG_TAG, "aumentarStockXCode() - codBarras: "
-				+ codBarras + " Despensa: " + despensa + " Cantidad: "
-				+ cantidad);
 		boolean result = false;
 
 		SQLiteDatabase db = this.getReadableDatabase();
@@ -561,15 +490,11 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 		}
 		// Cerramos la base de datos
 		db.close();
-		Log.d(Constantes.LOG_TAG, "aumentarStockXCode() - Return: " + result);
 		return result;
 	}
 
 	public boolean actualizarStockXidProducto(long producto, int despensa,
 			int cantidad) {
-		Log.d(Constantes.LOG_TAG, "aumentarStockXidProducto() - producto: "
-				+ producto + " Despensa: " + despensa + " Cantidad: "
-				+ cantidad);
 		boolean result = false;
 
 		SQLiteDatabase db = this.getReadableDatabase();
@@ -585,16 +510,11 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 		}
 		// Cerramos la base de datos
 		db.close();
-		Log.d(Constantes.LOG_TAG, "aumentarStockXidProducto() - Return: "
-				+ result);
 		return result;
 	}
 	
 	public boolean actualizarCantidadCompradaXidProducto(long producto, int despensa,
 			int cantidad) {
-		Log.d(Constantes.LOG_TAG, "actualizarCantidadCompradaXidProducto() - producto: "
-				+ producto + " Despensa: " + despensa + " Cantidad: "
-				+ cantidad);
 		boolean result = false;
 
 		SQLiteDatabase db = this.getReadableDatabase();
@@ -609,23 +529,14 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 		}
 		// Cerramos la base de datos
 		db.close();
-		Log.d(Constantes.LOG_TAG, "actualizarCantidadCompradaXidProducto() - Return: "
-				+ result);
 		return result;
 	}
 
-	public ProductoDespensa[] getProductosDespensa(int idDespensa) {
-		Log.d(Constantes.LOG_TAG, "getProductosDespensa()");
-		// ArrayList<ProductoDespensa> listaProductos= new
-		// ArrayList<ProductoDespensa>();
-		ProductoDespensa[] listaProductos;
-		ProductoDespensa productovacio = new ProductoDespensa();
+	public ArrayList<ProductoDespensa> getProductosDespensa(int idDespensa) {
+		ArrayList<ProductoDespensa> listaProductos = new ArrayList<ProductoDespensa>();
 
 		SQLiteDatabase db = this.getReadableDatabase();
 		if (db != null) {
-			Log.d(Constantes.LOG_TAG,
-					"getProductosDespensa() - Antes del SELECT");
-
 			Cursor c = db.rawQuery(" SELECT " + TablaProductos.id + ", "
 					+ TablaProductos.nombre + ", " + TablaContenido.stock
 					+ ", " + TablaContenido.stockMin + ", "
@@ -634,69 +545,34 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 					+ "" + " ON " + TablaContenido.idProducto + "="
 					+ TablaProductos.id + " WHERE " + TablaContenido.idDespensa
 					+ "= " + idDespensa, null);
-			//
-			Log.d(Constantes.LOG_TAG,
-					"getProductosDespensa() - Despues del SELECT");
 
 			// Nos aseguramos de que existe al menos un registro
 			if (c.moveToFirst()) {
-				Log.d(Constantes.LOG_TAG,
-						"getProductosDespensa() - Dentro movefirst");
 				// Recorremos el cursor hasta que no haya más registros
-				listaProductos = new ProductoDespensa[c.getCount()];
-				int i = 0;
-
 				do {
-					Log.d(Constantes.LOG_TAG,
-							"getProductosDespensa() - Dentro do-while " + i);
-
-					listaProductos[i] = new ProductoDespensa(
-							Var.despensaSelec.getId(), c.getLong(0),
+					listaProductos.add(new ProductoDespensa(
+							App.despensaSelec.getId(), c.getLong(0),
 							c.getString(1), c.getInt(2), c.getInt(3),
-							c.getString(4));
-					// despensas[i]= c.getString(1);
-					i++;
-
+							c.getString(4)));
 				} while (c.moveToNext());
 
-			} else {
+			} 
 
-				listaProductos = new ProductoDespensa[] { productovacio };
-			}
-
-			if (c != null && !c.isClosed()) {
-				Log.d(Constantes.LOG_TAG,
-						"getProductosDespensa() - Cerrar cursor");
+			if (c != null && !c.isClosed())
 				c.close();
-			}
-
-		} else {
-			// despensas = new String[] {""};
-			// listaProductos[0] = new ProductoDespensa() ;
-			listaProductos = new ProductoDespensa[] { productovacio };
-		}
+		} 
 
 		// Cerramos la base de datos
 		db.close();
-		// Log.d(Constantes.LOG_TAG,
-		// "getIdDespensa() - Return: "+despensas.toString());
 
-		Log.d(Constantes.LOG_TAG, "getProductosDespensa() - return");
 		return listaProductos;
 	}
 	
 	public ProductoDespensa getProductoDespensa(long idProducto) {
-		Log.d(Constantes.LOG_TAG, "getProductoDespensa()");
-		// ArrayList<ProductoDespensa> listaProductos= new
-		// ArrayList<ProductoDespensa>();
 		ProductoDespensa producto = new ProductoDespensa();
-//		ProductoDespensa productovacio = new ProductoDespensa();
 
 		SQLiteDatabase db = this.getReadableDatabase();
 		if (db != null) {
-			Log.d(Constantes.LOG_TAG,
-					"getProductoDespensa() - Antes del SELECT");
-
 			Cursor c = db.rawQuery(" SELECT " + TablaProductos.id + ", "
 					+ TablaProductos.nombre + ", " 
 					+ TablaContenido.stock	+ ", " 
@@ -705,57 +581,32 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 					+ TablaContenido.cantidadAComprar
 					+ " FROM " + TablaContenido.tabla + " JOIN " + TablaProductos.tabla
 					+ " ON " + TablaContenido.idProducto + "=" + TablaProductos.id 
-					+ " WHERE " + TablaContenido.idDespensa	+ "= " + Var.despensaSelec.getId()
+					+ " WHERE " + TablaContenido.idDespensa	+ "= " + App.despensaSelec.getId()
 					+ " AND "+ TablaContenido.idProducto +"="+idProducto, null);
-			//
-			Log.d(Constantes.LOG_TAG,
-					"getProductoDespensa() - Despues del SELECT");
 
 			// Nos aseguramos de que existe al menos un registro
 			if (c.moveToFirst()) {
-				Log.d(Constantes.LOG_TAG,
-						"getProductoDespensa() - Dentro movefirst");
 				// Recorremos el cursor hasta que no haya más registros
-//				listaProductos = new ProductoDespensa[c.getCount()];
-				int i = 0;
 
 				do {
-					Log.d(Constantes.LOG_TAG,
-							"getProductoDespensa() - Dentro do-while " + i);
-
 					producto = new ProductoDespensa(
-							Var.despensaSelec.getId(), c.getLong(0),
+							App.despensaSelec.getId(), c.getLong(0),
 							c.getString(1), c.getInt(2), c.getInt(3),
 							c.getString(4));
 					producto.setCantidadAComprar(c.getInt(5));
-					// despensas[i]= c.getString(1);
-					i++;
-
 				} while (c.moveToNext());
 
-			} else {
-
-//				producto =  ProductoDespensa { productovacio };
 			}
 
 			if (c != null && !c.isClosed()) {
-				Log.d(Constantes.LOG_TAG,
-						"getProductoDespensa() - Cerrar cursor");
 				c.close();
 			}
 
-		} else {
-			// despensas = new String[] {""};
-			// listaProductos[0] = new ProductoDespensa() ;
-//			listaProductos = new ProductoDespensa[] { productovacio };
-		}
+		} 
 
 		// Cerramos la base de datos
 		db.close();
-		// Log.d(Constantes.LOG_TAG,
-		// "getIdDespensa() - Return: "+despensas.toString());
 
-		Log.d(Constantes.LOG_TAG, "getProductoDespensa() - return");
 		return producto;
 	}
 
@@ -764,16 +615,11 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 	 * 
 	 * @return Productos[]
 	 */
-	public Producto[] getProductos() {
-		Log.d(Constantes.LOG_TAG, "getProductos()");
-		// private String[] despensas;
-		Producto productos[];
-
-		Producto productoVacio = new Producto(0, "", "", "", 0, "");
+	public ArrayList<Producto> getProductos() {
+		ArrayList<Producto> productos = new ArrayList<Producto>();
 
 		SQLiteDatabase db = this.getReadableDatabase();
 		if (db != null) {
-			Log.d(Constantes.LOG_TAG, "getProductos() - Antes del SELECT");
 			Cursor c = db.rawQuery(" SELECT " + TablaProductos.tabla + "."
 					+ TablaProductos.id + ", " + TablaProductos.tabla + "."
 					+ TablaProductos.nombre + ", " + TablaProductos.codBarras
@@ -786,52 +632,30 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 					+ "=" + TablaCategorias.tabla + "." + TablaCategorias.id
 					+ " ORDER BY " + TablaProductos.tabla + "."
 					+ TablaDespensas.nombre, null);
-			Log.d(Constantes.LOG_TAG, "getProductos() - Despues del SELECT");
 
 			// Nos aseguramos de que existe al menos un registro
 			if (c.moveToFirst()) {
-				Log.d(Constantes.LOG_TAG, "getProductos() - Dentro movefirst");
 				// Recorremos el cursor hasta que no haya más registros
 
-				productos = new Producto[c.getCount()];
-				int i = 0;
-
 				do {
-					Log.d(Constantes.LOG_TAG,
-							"getProductos() - Dentro do-while " + i);
-
-					productos[i] = new Producto(c.getLong(0), c.getString(1),
+					productos.add(new Producto(c.getLong(0), c.getString(1),
 							c.getString(2), c.getString(3), c.getInt(4),
-							c.getString(5));
-					i++;
-
+							c.getString(5)));
 				} while (c.moveToNext());
-
-			} else {
-				productos = new Producto[] { productoVacio };
 			}
-
-		} else {
-			productos = new Producto[] { productoVacio };
 		}
 		// Cerramos la base de datos
 		db.close();
-		Log.d(Constantes.LOG_TAG,
-				"getProductos() - Return: " + productos.toString());
 		return productos;
 
 	} // Fin getProductos
 
-	public ProductoDespensa[] getProductosCompra(int idDespensa) {
-		Log.d(Constantes.LOG_TAG, "getProductosCompra()");
+	public ArrayList<ProductoDespensa> getProductosCompra(int idDespensa) {
 		
-		ProductoDespensa[] listaProductos;
-		ProductoDespensa productovacio = new ProductoDespensa();
+		ArrayList<ProductoDespensa> listaProductos = new ArrayList<ProductoDespensa>();
 
 		SQLiteDatabase db = this.getReadableDatabase();
 		if (db != null) {
-			Log.d(Constantes.LOG_TAG, "getProductosCompra() - Antes del SELECT");
-			
 			Cursor c = db.rawQuery(" SELECT " 
 					+ TablaProductos.id + ", "
 					+ TablaProductos.nombre + ", " 
@@ -844,59 +668,41 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 					+ " ON " + TablaContenido.idProducto + "=" + TablaProductos.id 
 					+ " WHERE " + TablaContenido.idDespensa	+ "= " + idDespensa
 					+ " AND "+TablaContenido.enListaCompra+" > 0;", null);
-			//
-			Log.d(Constantes.LOG_TAG,
-					"getProductosCompra() - Despues del SELECT");
 
 			// Nos aseguramos de que existe al menos un registro
 			if (c.moveToFirst()) {
-				Log.d(Constantes.LOG_TAG,
-						"getProductosCompra() - Dentro movefirst");
 				// Recorremos el cursor hasta que no haya más registros
-				listaProductos = new ProductoDespensa[c.getCount()];
-				int i = 0;
-
+				ProductoDespensa producto;
 				do {
-					Log.d(Constantes.LOG_TAG,
-							"getProductosCompra() - Dentro do-while " + i);
-					
-					listaProductos[i] = new ProductoDespensa();
-					listaProductos[i].setIdDespensa(Var.despensaSelec.getId());
-					listaProductos[i].setIdProducto(c.getLong(0));
-					listaProductos[i].setNombre(c.getString(1));
-					listaProductos[i].setCantidadAComprar(c.getInt(2));
-					listaProductos[i].setCantidadComprada(c.getInt(3));
-					listaProductos[i].setCodigoBarras(c.getString(4));
-					listaProductos[i].setMultiplicador(c.getInt(5));
-					listaProductos[i].setComprado(c.getInt(6));
-					i++;
+					producto = new ProductoDespensa();
+					producto.setIdDespensa(App.despensaSelec.getId());
+					producto.setIdProducto(c.getLong(0));
+					producto.setNombre(c.getString(1));
+					producto.setCantidadAComprar(c.getInt(2));
+					producto.setCantidadComprada(c.getInt(3));
+					producto.setCodigoBarras(c.getString(4));
+					producto.setMultiplicador(c.getInt(5));
+					producto.setComprado(c.getInt(6));
+
+					listaProductos.add(producto);
 
 				} while (c.moveToNext());
 
-			} else {
-
-				listaProductos = new ProductoDespensa[] { productovacio };
-			}
+			} 
 
 			if (c != null && !c.isClosed()) {
-				Log.d(Constantes.LOG_TAG,
-						"getProductosCompra() - Cerrar cursor");
 				c.close();
 			}
 
-		} else {
-			listaProductos = new ProductoDespensa[] { productovacio };
-		}
+		} 
 
 		// Cerramos la base de datos
 		db.close();
 
-		Log.d(Constantes.LOG_TAG, "getProductosCompra() - return");
 		return listaProductos;
 	}
 
 	public boolean generarListaCompra(int idDespensa) {
-		Log.d(Constantes.LOG_TAG, "generarListaCompra()");
 		boolean result = false;
 		SQLiteDatabase db = this.getWritableDatabase();
 		// Si hemos abierto correctamente la base de datos
@@ -922,7 +728,7 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 				db.execSQL(sql1);
 				result = true;
 			} catch (SQLException e) {
-				Log.e(Constantes.LOG_TAG, "generarListaCompra() - SQLException");
+				e.printStackTrace();
 			}
 
 		}
@@ -949,7 +755,7 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 				db.execSQL(sql1);
 				result = true;
 			} catch (SQLException e) {
-				Log.e(Constantes.LOG_TAG, "productoComprado() - SQLException");
+				e.printStackTrace();
 			}
 
 		}
@@ -975,7 +781,7 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 				db.execSQL(sql1);
 				result = true;
 			} catch (SQLException e) {
-				Log.e(Constantes.LOG_TAG, "productoComprado() - SQLException");
+				e.printStackTrace();
 			}
 
 		}
@@ -984,7 +790,6 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 	}
 
 	public boolean updateProducto(Producto producto) {
-		// TODO Auto-generated method stub
 		boolean result = false;
 		SQLiteDatabase db = this.getWritableDatabase();
 		if (db != null) {
@@ -998,14 +803,13 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 				db.execSQL(sql1);
 				result = true;
 			} catch (SQLException e) {
-				Log.e(Constantes.LOG_TAG, "updateProducto() - SQLException");
+				e.printStackTrace();
 			}
 		}
 		return result;
 	}
 	
 	public boolean updateProductoDespensa(ProductoDespensa producto) {
-		// TODO Auto-generated method stub
 		boolean result = false;
 		
 		SQLiteDatabase db = this.getWritableDatabase();
@@ -1022,7 +826,7 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 				db.execSQL(sql1);
 				result = true;
 			} catch (SQLException e) {
-				Log.e(Constantes.LOG_TAG, "updateProductoDespensa() - SQLException");
+				e.printStackTrace();
 			}
 		}
 
@@ -1030,7 +834,6 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 	}
 
 	public boolean eliminarProducto(Producto producto) {
-		// TODO Auto-generated method stub
 		boolean result = false;
 
 		SQLiteDatabase db = this.getWritableDatabase();
@@ -1043,7 +846,7 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 				db.execSQL(sql1);
 				result = true;
 			} catch (SQLException e) {
-				Log.e(Constantes.LOG_TAG, "eliminarProducto() - SQLException");
+				e.printStackTrace();
 			}
 		}
 
@@ -1051,7 +854,6 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 	}
 
 	public boolean eliminarProductoDespensa(ProductoDespensa producto) {
-		// TODO Auto-generated method stub
 		boolean result = false;
 
 		SQLiteDatabase db = this.getWritableDatabase();
@@ -1067,8 +869,7 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 				db.execSQL(sql1);
 				result = true;
 			} catch (SQLException e) {
-				Log.e(Constantes.LOG_TAG,
-						"eliminarProductoDespensa() - SQLException");
+				e.printStackTrace();
 			}
 		}
 
@@ -1076,7 +877,6 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 	}
 
 	public boolean eliminarProductoCompra(ProductoDespensa producto) {
-		// TODO Auto-generated method stub
 		boolean result = false;
 
 		SQLiteDatabase db = this.getWritableDatabase();
@@ -1090,8 +890,7 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 				db.execSQL(sql1);
 				result = true;
 			} catch (SQLException e) {
-				Log.e(Constantes.LOG_TAG,
-						"eliminarProductoCompra() - SQLException");
+				e.printStackTrace();
 			}
 		}
 
@@ -1099,7 +898,6 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 	}
 	
 	public boolean eliminarProductosCompra() {
-		// TODO Auto-generated method stub
 		boolean result = false;
 
 		SQLiteDatabase db = this.getWritableDatabase();
@@ -1107,13 +905,12 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 		if (db != null) {
 
 			String sql1 = "UPDATE " + TablaContenido.tabla + " SET "+TablaContenido.enListaCompra+"= 0"
-					+ " WHERE "	+ TablaContenido.idDespensa + " = "+ Var.despensaSelec.getId() + ";";
+					+ " WHERE "	+ TablaContenido.idDespensa + " = "+ App.despensaSelec.getId() + ";";
 			try {
 				db.execSQL(sql1);
 				result = true;
 			} catch (SQLException e) {
-				Log.e(Constantes.LOG_TAG,
-						"eliminarProductoCompra() - SQLException");
+				e.printStackTrace();
 			}
 		}
 
@@ -1135,27 +932,9 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 				db.execSQL(sql1);
 				result = true;
 			} catch (SQLException e) {
-				Log.e(Constantes.LOG_TAG,
-						"insertarProductoACompra() - SQLException");
+				e.printStackTrace();
 			}
 
-//			ContentValues nuevoRegistro = new ContentValues();
-//
-//			nuevoRegistro.put(TablaListaCompra.idDespensa,
-//					producto.getIdDespensa());
-//			nuevoRegistro.put(TablaListaCompra.idProducto,
-//					producto.getIdProducto());
-//			nuevoRegistro.put(TablaListaCompra.cantidadAComprar,
-//					producto.getStockMin());
-//
-//			// Insertamos el registro en la base de datos
-//			long code = db.insert(TablaListaCompra.tabla, null, nuevoRegistro);
-//
-//			if (code > 0)
-//				result = true;
-//			Log.i(Constantes.LOG_TAG,
-//					"insertarProductoACompra() - resultado db.insert(): "
-//							+ code);
 		}
 
 		db.close();
@@ -1165,13 +944,9 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 
 	public boolean duplicarDespensa(Despensa despensaActual,
 			Despensa despensaNueva) {
-		Log.d(Constantes.LOG_TAG, "duplicarDespensa()");
-		// TODO Auto-generated method stub
 		boolean result = false;
 
 		long idDespensa = addDespensa(despensaNueva.getNombre());
-		Log.d(Constantes.LOG_TAG, "duplicarDespensa() - idDespensa: "
-				+ idDespensa);
 		if (idDespensa > 0) {
 			despensaNueva.setId((int) idDespensa);
 
@@ -1194,8 +969,7 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 					db.execSQL(sql4);
 					result = true;
 				} catch (SQLException e) {
-					Log.e(Constantes.LOG_TAG,
-							"duplicarDespensa() - SQLException");
+					e.printStackTrace();
 					result = false;
 				}
 				
@@ -1203,13 +977,11 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 			db.close();
 		}
 
-		Log.d(Constantes.LOG_TAG, "duplicarDespensa() - result: " + result);
 		return result;
 	}
 
 
 	public boolean updateDespensa(Despensa despensa) {
-		// TODO Auto-generated method stub
 		boolean result=false;
 		
 		SQLiteDatabase db = this.getWritableDatabase();
@@ -1223,8 +995,7 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 				db.execSQL(sql1);
 				result = true;
 			} catch (SQLException e) {
-				Log.e(Constantes.LOG_TAG,
-						"updateDespensa() - SQLException");
+				e.printStackTrace();
 			}
 		}
 		
@@ -1248,8 +1019,6 @@ public class BaseDeDatos extends SQLiteOpenHelper {
 
 			if (code > 0)
 				result = true;
-			Log.i(Constantes.LOG_TAG,"insertarCategoria() - resultado db.insert(): "
-							+ code);
 		}
 
 		db.close();
